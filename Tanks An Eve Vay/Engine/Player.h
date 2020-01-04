@@ -4,6 +4,7 @@
 #include <string>
 #include "Tank.h"
 #include "Vector2f.h"
+#include "Weapon.h"
 
 
 
@@ -42,7 +43,7 @@ public:
 	void rotateTurret(double forAngle);
 	void moveMyTank(Vector2f dv);
 	bool amDead();
-	void fireInTheHole();
+	Weapon* fireInTheHole();
 }; // ClASS PLAYER
 
 
