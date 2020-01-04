@@ -8,14 +8,9 @@
 class Tank : public Object
 {
 private:
-	Object m_PositionParameters;
 
 public:
 	Tank(Vector2f position, Vector2f size);
-
-	Object getPositionParameters();
-
-	Vector2f GetPosition();
 
 	void moveTank(Vector2f dv);
 }; // CLASS TANK
