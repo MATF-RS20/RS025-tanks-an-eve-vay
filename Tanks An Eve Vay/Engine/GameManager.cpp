@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include "Tank.h"
+#include "Weapon.h"
 enum PlayerMove {
 	Left,
 	Right
@@ -18,13 +19,13 @@ bool GameManager::GetGridValue(int i, int j) {
 Vector2f GameManager::GetProjectilePosition()
 {
 	//TODO Link with weapon position
-	return Vector2f(0.2,0.2);
+	return m_Projectile->fly();
 }
 
 Vector2f GameManager::GetProjectileSize()
 {
 	//TODO
-	return Vector2f(0.5,0.5);
+	return m_Projectile->GetSize();
 }
 
 bool GameManager::Projectile()
@@ -73,6 +74,7 @@ void GameManager::Initialize()
 	m_Map->FillTerrain(TerrainType::Flat);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
+	m_Projectile = m_Player1->fireInTheHole();
 }
 
 float GameManager::ScaleRatioX()
@@ -97,7 +99,7 @@ void GameManager::Fire()
 {
 	if (m_CurrentPlayer == 1)
 	{
-		m_Projectile = nullptr;
+		m_Projectile = m_Player1->fireInTheHole();
 	}
 }
 
