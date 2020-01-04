@@ -162,6 +162,7 @@
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Vector2f.cpp" />
+    <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vector2f.h" />
+    <ClInclude Include="Weapon.h" />
     <ClInclude Include="WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>
