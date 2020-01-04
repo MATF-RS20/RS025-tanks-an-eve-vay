@@ -18,13 +18,11 @@ bool GameManager::GetGridValue(int i, int j) {
 
 Vector2f GameManager::GetProjectilePosition()
 {
-	//TODO Link with weapon position
 	return m_Projectile->fly();
 }
 
 Vector2f GameManager::GetProjectileSize()
 {
-	//TODO
 	return m_Projectile->GetSize();
 }
 
@@ -105,7 +103,7 @@ void GameManager::Fire()
 
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
-Terrain* GameManager::m_Map = new Terrain(100);
+Terrain* GameManager::m_Map = new Terrain(10);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 

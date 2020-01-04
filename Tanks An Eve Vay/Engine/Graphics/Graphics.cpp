@@ -264,8 +264,8 @@ void Graphics::DrawGridPart(int i,int j)
 void Graphics::DrawProjectile()
 {
 	Vector2f position = GameManager::GetProjectilePosition();
-	int x = position.GetX();
-	int y = position.GetY();
+	double x = position.GetX();
+	double y = position.GetY();
 
 	Vector2f size = GameManager::GetProjectileSize();
 	double w = size.GetX();
