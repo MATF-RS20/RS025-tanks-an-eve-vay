@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 Player::Player() {};
 
 Player::Player(Tank *t, std::string name, const int id) : 
@@ -13,10 +14,10 @@ Player::Player(std::string name, const int id) :
 	m_uniqueID(id)
 {
 	if (id == 1)
-		m_playerTank = new Tank(Vector2f(-0.5f, 0.0f), Vector2f(2.0f, 0.0f)); //predefinisao sam poziciju radi provere
+		m_playerTank = new Tank(Vector2f(-0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
 
 	else if (id == 2)
-		m_playerTank = new Tank(Vector2f(0.5f, 0.0f), Vector2f(2.0f, 0.0f)); //predefinisao sam poziciju radi provere
+		m_playerTank = new Tank(Vector2f(0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
 }
 
 Player::~Player()
@@ -49,7 +50,11 @@ void Player::moveMyTank(Vector2f dv)
 }
 
 // This function should call something with weapons and map?
-void Player::fireInTheHole() 
+Weapon* Player::fireInTheHole() 
 {
+	Weapon *projectile = new Weapon(m_playerTank->GetPosition(),
+									m_playerTank->GetSize(),
+									m_angle, m_firePower);
 
+	return projectile;
 }
