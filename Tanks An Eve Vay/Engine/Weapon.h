@@ -16,6 +16,6 @@ private:
 public:
 	Weapon(Vector2f position, Vector2f size, double playerAngle, double playerVelocity);
 
-	void fly();
+	Vector2f fly();
 };
 
