@@ -1,5 +1,9 @@
 #include "Player.h"
 
+Player::Player()
+{
+
+}
 
 Player::Player(Tank *t, std::string name, const int id) : m_playerTank(t),
 m_playerName(name),
