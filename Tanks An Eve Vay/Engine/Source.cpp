@@ -3,7 +3,6 @@
 #pragma comment(lib,"DirectXTK.lib")
 
 #include "Engine.h"
-#include "Tank.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
