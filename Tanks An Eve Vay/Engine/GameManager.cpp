@@ -15,6 +15,23 @@ bool GameManager::GetGridValue(int i, int j) {
 	return m_Map->GetElement(i,j);
 }
 
+Vector2f GameManager::GetProjectilePosition()
+{
+	//TODO Link with weapon position
+	return Vector2f(0.2,0.2);
+}
+
+Vector2f GameManager::GetProjectileSize()
+{
+	//TODO
+	return Vector2f(0.5,0.5);
+}
+
+bool GameManager::Projectile()
+{
+	return m_Projectile != nullptr;
+}
+
 Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
@@ -27,14 +44,25 @@ Vector2f GameManager::GetPlayerPosition(int player)
 	}
 }
 
-void GameManager::MovePlayer(int player, Vector2f dv)
+Vector2f GameManager::GetPlayerSize(int player)
 {
 	if (player == 1)
 	{
+		return m_Player1->getPlayerTank().GetSize();
+	}
+	else
+	{
+		return m_Player2->getPlayerTank().GetSize();
+	}
+}
+
+void GameManager::MovePlayer(Vector2f dv)
+{
+	if (m_CurrentPlayer == 1)
+	{
 		m_Player1->moveMyTank(dv);
 	}
-
-	else if (player == 2)
+	else if (m_CurrentPlayer == 2)
 	{
 		m_Player2->moveMyTank(dv);
 	}
@@ -65,9 +93,20 @@ int GameManager::GetMapM()
 	return m_MapSizeM;
 }
 
+void GameManager::Fire()
+{
+	if (m_CurrentPlayer == 1)
+	{
+		m_Projectile = nullptr;
+	}
+}
+
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
-std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(100, std::vector<bool>(100, false));
 Terrain* GameManager::m_Map = new Terrain(100);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
+
+int GameManager::m_CurrentPlayer = 1;
+
+Weapon * GameManager::m_Projectile = nullptr;
