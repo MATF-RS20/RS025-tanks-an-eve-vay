@@ -3,30 +3,38 @@
 #include "Object.h"
 #include "Vector2f.h"
 #include <vector>
-enum MapType
+
+enum TerrainType
 {
-	Flat = 0,
-	Sin = 1,
-	Random = 2
+	Flat,
+	Sin,
+	Random
 };
 
-class Map
+class Terrain
 {
 public:
-	Map(MapType type = MapType::Flat);
-	bool DetectCoalision(const Object* object);
+	Terrain(unsigned  n,unsigned m);
+	Terrain(unsigned n);
 
-	void PrintMap();
+	unsigned GetN() const;
+	unsigned GetM() const;
+	bool GetElement(unsigned i, unsigned j);
+	//bool DetectCoalision(const Object* object);
 
-	~Map();
+	void FillTerrain(TerrainType type);
+	void PrintTerrain();
+	bool DestroyTerrain(const Object* object);
+
+	~Terrain();
 protected:
 	std::vector<Vector2f> FindAllAffectedGridCell(const Object *object);
-	void DestroyMap(const Object* object);
 private:
+	unsigned m_N;
+	unsigned m_M;
+	std::vector<std::vector<bool>> m_TerrainMatrix;
 
-	Object* m_Grid[30][30];
-
-	Map(const Map& m) = delete;
-	Map& operator=(const Map& p) = delete;
+	Terrain(const Terrain& m) = delete;
+	Terrain& operator=(const Terrain& p) = delete;
 };
 

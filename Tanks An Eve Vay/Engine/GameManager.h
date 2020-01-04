@@ -24,9 +24,9 @@ public:
 	static int GetMapM();
 
 protected:
-	static int n;
-	static int m;
-	static Map* Mapa;
+	static int m_MapSizeN;
+	static int m_MapSizeM;
+	static Terrain* m_Map;
 private:
 
 	static std::vector<std::vector<bool>> Matrix;

@@ -1,72 +1,90 @@
-#include "Terrain.h"
 #include "Object.h"
-Map::Map(MapType type)
+#include "Terrain.h"
+
+
+Terrain::Terrain(unsigned n, unsigned m)
+	:m_N(n), m_M(m)
 {
-	switch (type)
-	{
-	case MapType::Flat:
-		for (unsigned i = 0; i < 30; i++)
-		{
-			for (unsigned j = 0; j < 30; j++)
-			{
-				if (j > 15)
-				{
-					m_Grid[i][j] = nullptr;
-				}
-				else
-				{
-					m_Grid[i][j] = new Object();
-				}
-			}
-		}
-		break;
-	default:
-		break;
-	}
+	m_TerrainMatrix = std::vector<std::vector<bool>>(n, std::vector<bool> ( m, false));
+}
+Terrain::Terrain(unsigned n)
+	:m_N(n), m_M(n)
+{
+	m_TerrainMatrix = std::vector<std::vector<bool>>(n, std::vector<bool>(n, false));
 }
 
-void Map::PrintMap()
+unsigned Terrain::GetN() const
 {
-	for (unsigned i = 0; i < 30; i++)
-	{
-		for (unsigned j = 0; j < 30; j++)
-		{
-			if (m_Grid[i][j] != nullptr)
-			{
-				//std::cout << m_Grid[i][j]->ToString() << std::endl;
-			}
-		}
-	}
+	return m_N;
 }
 
-Map::~Map()
+unsigned Terrain::GetM() const
 {
-	for (unsigned i = 0; i < 30; i++)
+	return m_M;
+}
+
+bool Terrain::GetElement(unsigned i, unsigned j)
+{
+	return m_TerrainMatrix[i][j];
+}
+
+void Terrain::PrintTerrain()
+{
+	for (unsigned i = 0; i < m_N; i++)
 	{
-		for (unsigned j = 0; j < 30; j++)
+		for (unsigned j = 0; j < m_M; j++)
 		{
-			if (m_Grid[i][j] != nullptr)
+			if (m_TerrainMatrix[i][j])
 			{
-				delete m_Grid[i][j];
+				std::cout << m_TerrainMatrix[i][j]<< std::endl;
 			}
 		}
 	}
-
 }
 
-std::vector<Vector2f> Map::FindAllAffectedGridCell(const Object * object)
+Terrain::~Terrain()
+{
+}
+
+std::vector<Vector2f> Terrain::FindAllAffectedGridCell(const Object * object)
 {
 	return std::vector<Vector2f>();
 }
-
-void Map::DestroyMap(const Object * object)
+bool Terrain::DestroyTerrain(const Object * object)
 {
+	bool hasAffectTerrain = false;
 	std::vector<Vector2f> affectedGridCell = FindAllAffectedGridCell(object);
 	auto it = affectedGridCell.cbegin();
 	while (it != affectedGridCell.cend())
 	{
 		unsigned i = it->GetX();
 		unsigned j = it->GetY();
-		m_Grid[i][j] = nullptr;
+		m_TerrainMatrix[i][j] = false;
+		hasAffectTerrain = true;
+	}
+	return hasAffectTerrain;
+}
+
+void Terrain::FillTerrain(TerrainType type)
+{
+	switch (type)
+	{
+	case TerrainType::Flat:
+	{
+		unsigned limit = m_N / 2;
+		for (unsigned i = 0; i < m_N ;i++)
+		{
+			for (unsigned j = 0; j < m_M; j++)
+			{
+				if (j < limit)
+				{
+					m_TerrainMatrix[i][j] = true;
+				}
+			}
+		}
+		break;
+	}
+	default:
+		break;
 	}
 }

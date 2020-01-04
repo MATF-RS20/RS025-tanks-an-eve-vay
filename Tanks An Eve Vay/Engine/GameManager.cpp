@@ -6,13 +6,13 @@ enum PlayerMove {
 };
 
 bool GameManager::GetGridValue(int i, int j) {
-	if (i >= n || j >= m || i < 0 || j < 0)
+	if (i >= m_MapSizeN || j >= m_MapSizeM || i < 0 || j < 0)
 	{
 		ErrorLogger::Log("Grid selected index out of range!!!!");
 		return false;
 
 	}
-	return Matrix[i][j];
+	return m_Map->GetElement(i,j);
 }
 
 Vector2f GameManager::GetPlayerPosition(int player)
@@ -41,36 +41,32 @@ void GameManager::MovePlayer(int player, Vector2f dv)
 
 void GameManager::Initialize()
 {
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < m / 2; j++)
-		{
-			Matrix[i][j] = true;
-		}
-	}
+	m_Map->FillTerrain(TerrainType::Flat);
+	m_MapSizeN = m_Map->GetN();
+	m_MapSizeM = m_Map->GetM();
 }
 
 float GameManager::ScaleRatioX()
 {
-	return 2.f / n;
+	return 2.f / m_MapSizeN;
 }
 
 float GameManager::ScaleRatioY()
 {
-	return 2.f / m;
+	return 2.f / m_MapSizeM;
 }
 int GameManager::GetMapN()
 {
-	return n;
+	return m_MapSizeN;
 }
 int GameManager::GetMapM()
 {
-	return m;
+	return m_MapSizeM;
 }
 
-int GameManager::n = 100;
-int GameManager::m = 100;
-std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(n, std::vector<bool>(m, false));
-Map* GameManager::Mapa = new Map();
+int GameManager::m_MapSizeN = 0;
+int GameManager::m_MapSizeM = 0;
+std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(100, std::vector<bool>(100, false));
+Terrain* GameManager::m_Map = new Terrain(100);
 Player* GameManager::m_Player1 = new Player();
 Player* GameManager::m_Player2 = new Player();
