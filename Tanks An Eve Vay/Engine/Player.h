@@ -5,6 +5,8 @@
 #include "Tank.h"
 #include "Vector2f.h"
 
+
+
 class Player
 {
 private:
@@ -38,7 +40,7 @@ public:
 
 
 	void rotateTurret(double forAngle);
-	void moveTank(int direction);
+	void moveMyTank(Vector2f dv);
 	bool amDead();
 	void fireInTheHole();
 }; // ClASS PLAYER

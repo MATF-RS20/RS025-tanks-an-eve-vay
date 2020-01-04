@@ -37,6 +37,16 @@ void GameManager::MovePlayer(int player, Vector2f dv)
 	//{
 	//	p2 = p2 + dv;
 	//}
+
+	if (player == 1)
+	{
+		m_Player1->moveMyTank(dv);
+	}
+
+	else if (player == 2)
+	{
+		m_Player2->moveMyTank(dv);
+	}
 }
 
 void GameManager::Initialize()
