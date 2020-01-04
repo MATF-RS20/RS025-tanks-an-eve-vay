@@ -19,11 +19,11 @@ Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
 	{
-		return Vector2f();
+		return m_Player1->GetTankPosition();
 	}
 	else
 	{
-		return Vector2f();
+		return m_Player2->GetTankPosition();
 	}
 }
 
@@ -66,7 +66,7 @@ int GameManager::GetMapM()
 
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
-std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(100, std::vector<bool>(100, false));
-Terrain* GameManager::m_Map = new Terrain(100);
-Player* GameManager::m_Player1 = new Player();
-Player* GameManager::m_Player2 = new Player();
+std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(50, std::vector<bool>(50, false));
+Terrain* GameManager::m_Map = new Terrain(50);
+Player* GameManager::m_Player1 = new Player("Player1", 1);
+Player* GameManager::m_Player2 = new Player("Player2", 2);

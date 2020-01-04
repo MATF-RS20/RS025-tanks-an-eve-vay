@@ -2,15 +2,18 @@
 #define TANK_H
 
 #include <string>
+#include "Object.h"
 
 #pragma once
-class Tank
+class Tank : public Object
 {
 private:
-	std::string nesto;
+	Object m_PositionParameters;
 
 public:
-	Tank(std::string a);
+	Tank(Vector2f position, Vector2f size);
+
+	Object getPositionParameters();
 }; // CLASS TANK
 
 #endif //END OF TANK_H
