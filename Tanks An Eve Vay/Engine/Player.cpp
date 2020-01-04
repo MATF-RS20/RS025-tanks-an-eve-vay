@@ -49,4 +49,7 @@ void Player::moveMyTank(Vector2f dv)
 }
 
 // This function should call something with weapons and map?
-void Player::fireInTheHole() {}
+void Player::fireInTheHole() 
+{
+
+}
