@@ -10,15 +10,23 @@
 class Graphics
 {
 public:
+
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
-private:
-	bool InitializeDirectX(HWND hwdn, int width, int height);
-	bool InitializeShaders();
-	bool InitializeScene();
+	void DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,size_t arraySize);
+
+protected:
+
+	void DrawShape(Vertex array[], size_t arraySize);
 	void DrawTank(int player);
 	void DrawMap();
-	void DrawGridPart(int i,int j);
+	void DrawGridPart(int i, int j);
+
+private:
+
+	bool InitializeDirectX(HWND hwdn, int width, int height);
+	bool InitializeShaders();
+
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
@@ -28,5 +36,4 @@ private:
 	PixelShader m_PixelShader;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_VertexBuffer;
-
 };

@@ -83,6 +83,7 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(backBuffer.GetAddressOf()));
+
 	if (FAILED(hr))
 	{
 		return false;
@@ -132,52 +133,28 @@ bool Graphics::InitializeShaders()
 	return true;
 }
 
-void Graphics::DrawTank(int player)
+void Graphics::DrawShape(Vertex array[],size_t arraySize)
 {
-	float scalex = SCALE_RATIO_X /1.4f;
-	float scaley =  SCALE_RATIO_Y/  0.5f;
-
-	Vector2f playerPosition = GameManager::GetPlayerPosition(player);
-	float playerX = playerPosition.GetX();
-	float playerY = playerPosition.GetY();
-	std::vector<Vertex> v
-	{
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.5f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.5f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.7f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.7f*scalex + playerX,0.3f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.3f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.0f*scaley + playerY)
-	};
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * v.size();
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * arraySize;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
 	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = v.data();
+	vertexBufferData.pSysMem = array;
 
 	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
 	if (FAILED(hr))
 	{
-		ErrorLogger::Log("Failed to draw tank");
+		ErrorLogger::Log("Failed to draw object");
 	}
 
 	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
 	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
@@ -186,9 +163,46 @@ void Graphics::DrawTank(int player)
 	UINT offset = 0;
 	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 
-
-	m_DeviceContext->Draw(v.size() , 0);
+	m_DeviceContext->Draw(arraySize, 0);
 	m_VertexBuffer->Release();
+}
+
+void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,size_t arraySize)
+{
+	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
+	DrawShape(array,arraySize);
+}
+
+void Graphics::DrawTank(int player)
+{
+	float scalex = SCALE_RATIO_X /1.4f;
+	float scaley =  SCALE_RATIO_Y/  0.5f;
+
+	Vector2f playerPosition = GameManager::GetPlayerPosition(player);
+	float playerX = playerPosition.GetX();
+	float playerY = playerPosition.GetY();
+	Vertex v [] 
+	{
+		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY), //1
+		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY), //2
+		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),//3
+		Vertex(-0.5f*scalex + playerX,0.4f*scaley + playerY),//4
+		//Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),//5
+		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),//6
+		//Vertex(0.7f*scalex + playerX,0.4f*scaley + playerY),//7
+		//Vertex(0.7f*scalex + playerX,0.3f*scaley + playerY),//8
+		Vertex(0.0f*scalex + playerX,0.3f*scaley + playerY),//9
+		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY),//10
+		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),//11
+		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),//12
+		Vertex(-0.7f*scalex + playerX,0.0f*scaley + playerY)
+	};
+
+	std::vector<Vertex> cupol {
+		
+	};
+	DrawShape(v, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP, ARRAYSIZE(v));
+
 }
 
 void Graphics::DrawMap()
@@ -220,40 +234,7 @@ void Graphics::DrawGridPart(int i,int j)
 		Vertex(i*scaleRatioX,(j+1)*scaleRatioY),
 		Vertex(i*scaleRatioX,j*scaleRatioY)
 	};
-
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(gridPart);
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData;
-	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = gridPart;
-
-	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
-	if (FAILED(hr))
-	{
-		ErrorLogger::Log("Failed to draw tank");
-	}
-	
-	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
-	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
-
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
-
-
-	m_DeviceContext->Draw(ARRAYSIZE(gridPart), 0);
-	
-	m_VertexBuffer->Release();
+	DrawShape(gridPart, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP,ARRAYSIZE(gridPart));
 }
 
 

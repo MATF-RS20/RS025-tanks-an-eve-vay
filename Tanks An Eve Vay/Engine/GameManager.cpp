@@ -67,6 +67,6 @@ int GameManager::GetMapM()
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
 std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(100, std::vector<bool>(100, false));
-Terrain* GameManager::m_Map = new Terrain(100);
+Terrain* GameManager::m_Map = new Terrain(10);
 Player* GameManager::m_Player1 = new Player();
 Player* GameManager::m_Player2 = new Player();
