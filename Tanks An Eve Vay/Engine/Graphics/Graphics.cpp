@@ -1,6 +1,6 @@
 #include "Graphics.h"
 #include <vector>
-#include "..\\GameManeger.h"
+#include "..\\GameManager.h"
 
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())

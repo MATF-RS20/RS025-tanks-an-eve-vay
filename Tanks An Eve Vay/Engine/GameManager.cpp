@@ -69,8 +69,8 @@ int GameManager::GetMapM()
 	return m;
 }
 
-int GameManager::n = 20;
-int GameManager::m = 20;
+int GameManager::n = 100;
+int GameManager::m = 100;
 Vector2f GameManager::p1 = Vector2f(0.5f, 0.0f);
 Vector2f GameManager::p2 = Vector2f(-0.5f, 0.0f);
 std::vector<std::vector<bool>> GameManager::Matrix = std::vector<std::vector<bool>>(n, std::vector<bool>(m, false));

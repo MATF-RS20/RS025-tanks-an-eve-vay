@@ -1,5 +1,5 @@
 #include "Engine.h"
-#include "GameManeger.h"
+#include "GameManager.h"
 bool Engine::Initialize(HINSTANCE hInstance, std::string windowTitle, std::string windowClass, int width, int height)
 {
 	if (!m_RenderWindow.Initialize(this, hInstance, windowTitle, windowClass, width, height))
