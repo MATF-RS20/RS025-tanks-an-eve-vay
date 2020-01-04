@@ -160,6 +160,7 @@
     <ClCompile Include="Graphics\Shaders.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Vector2f.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Tank.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Vector2f.h" />
     <ClInclude Include="WindowContainer.h" />
   </ItemGroup>
