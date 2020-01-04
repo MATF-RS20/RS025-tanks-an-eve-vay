@@ -7,7 +7,7 @@
 class Tank
 {
 private:
-	const std::string nesto;
+	std::string nesto;
 
 public:
 	Tank(std::string a);

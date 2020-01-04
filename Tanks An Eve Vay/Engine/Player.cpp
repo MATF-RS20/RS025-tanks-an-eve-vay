@@ -1,7 +1,7 @@
 #include "Player.h"
 
 
-Player::Player(Tank &t, std::string &name, const int id) : m_playerTank(&t),
+Player::Player(Tank *t, std::string name, const int id) : m_playerTank(t),
 m_playerName(name),
 m_uniqueID(id)
 {}

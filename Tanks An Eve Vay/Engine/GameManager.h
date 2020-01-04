@@ -4,7 +4,8 @@
 
 #include "ErrorLogger.h"
 #include "Vector2f.h"
-
+#include "Player.h"
+#include "Terrain.h"
 class GameManager
 {
 public:
@@ -25,10 +26,12 @@ public:
 protected:
 	static int n;
 	static int m;
-	static Vector2f p1;
-	static Vector2f p2;
-	static std::vector<std::vector<bool>> Matrix;
+	static Map* Mapa;
 private:
+
+	static std::vector<std::vector<bool>> Matrix;
+	static Player *m_Player1;
+	static Player *m_Player2;
 
 };
 

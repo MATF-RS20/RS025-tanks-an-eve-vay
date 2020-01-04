@@ -9,11 +9,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nCmdShow)
 {
-	HRESULT hr =S_OK;
-	if (FAILED(hr))
-	{
-		ErrorLogger::Log(E_INVALIDARG, "Test Message");
-	}
 
 	Engine engine;
 	engine.Initialize(hInstance, "Title", "My WIndow Class", 800, 600);

@@ -15,8 +15,8 @@ private:
 	int m_uniqueID;
 
 public:
-
-	Player(Tank &t, std::string &name, const int id);
+	Player();
+	Player(Tank *t, std::string name, const int id);
 
 	// Getters
 	double getHealth();
