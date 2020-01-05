@@ -103,7 +103,7 @@ void GameManager::Fire()
 
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
-Terrain* GameManager::m_Map = new Terrain(10);
+Terrain* GameManager::m_Map = new Terrain(100);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 

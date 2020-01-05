@@ -53,7 +53,7 @@ void Player::moveMyTank(Vector2f dv)
 Weapon* Player::fireInTheHole() 
 {
 	Weapon *projectile = new Weapon(m_playerTank->GetPosition(),
-									m_playerTank->GetSize(),
+									Vector2f(0.01f, 0.01f),
 									m_angle, m_firePower);
 
 	return projectile;
