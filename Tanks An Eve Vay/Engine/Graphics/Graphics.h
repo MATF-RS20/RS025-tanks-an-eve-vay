@@ -13,11 +13,11 @@ public:
 
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
-	void DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,size_t arraySize);
+	void DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize);
 
 protected:
 
-	void DrawShape(Vertex array[], size_t arraySize);
+	void DrawShape(Vertex array[], unsigned arraySize);
 	void DrawTank(int player);
 	void DrawMap();
 	void DrawGridPart(int i, int j);

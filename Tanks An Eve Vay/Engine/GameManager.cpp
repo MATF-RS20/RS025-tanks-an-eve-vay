@@ -19,11 +19,11 @@ Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
 	{
-		return Vector2f();
+		return Vector2f(0.0,0.0);
 	}
 	else
 	{
-		return Vector2f();
+		return Vector2f(0,0);
 	}
 }
 
@@ -54,6 +54,41 @@ float GameManager::ScaleRatioX()
 float GameManager::ScaleRatioY()
 {
 	return 2.f / m_MapSizeM;
+}
+void GameManager::RotateTurret(Vector2f mousePosition)
+{
+	//TODO mouse coord system need to be transfered to game coord system
+	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
+	double yScale = 1.f - mousePosition.GetY() / 300.0f;
+
+	Vector2f playerPosition = GetPlayerPosition(1);
+	double k = (yScale - playerPosition.GetX()) / (xScale - playerPosition.GetY());
+	double radianAngle = std::atan(k);
+	/*if (radianAngle < 0)
+	{
+		if (yScale > playerPosition.GetY() && yScale > 0)
+		{
+			radianAngle += 3.1415926536;
+			m_Player1->setAngle(radianAngle);
+		}
+	}
+	else
+	{
+		if (yScale > playerPosition.GetY())
+		{
+			m_Player1->setAngle(radianAngle);
+		}
+
+	}*/
+	m_Player1->setAngle(radianAngle);
+	OutputDebugStringA(std::to_string(m_Player1->getAngle()).c_str());
+	OutputDebugStringA("    ");
+
+	//*(180.0 / 3.141592653589793238463)
+}
+double GameManager::GetPlayerAngle()
+{
+	return m_Player1->getAngle();
 }
 int GameManager::GetMapN()
 {
