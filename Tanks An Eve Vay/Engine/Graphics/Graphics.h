@@ -15,10 +15,12 @@ public:
 private:
 	bool InitializeDirectX(HWND hwdn, int width, int height);
 	bool InitializeShaders();
-	bool InitializeScene();
+	
 	void DrawTank(int player);
 	void DrawMap();
 	void DrawGridPart(int i,int j);
+	void DrawProjectile();
+
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
