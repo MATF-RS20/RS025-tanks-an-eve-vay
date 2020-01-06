@@ -35,11 +35,11 @@ Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
 	{
-		return m_Player1->GetTankPosition();
+		return Vector2f();
 	}
 	else
 	{
-		return m_Player2->GetTankPosition();
+		return Vector2f();
 	}
 }
 
@@ -106,7 +106,6 @@ int GameManager::m_MapSizeM = 0;
 Terrain* GameManager::m_Map = new Terrain(100);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
-
 int GameManager::m_CurrentPlayer = 1;
-
 Weapon * GameManager::m_Projectile = nullptr;
+
