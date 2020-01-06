@@ -1,8 +1,6 @@
 #include "Player.h"
 
 
-
-
 Player::Player() {};
 
 Player::Player(Tank *t, std::string name, const int id) :
@@ -20,8 +18,6 @@ Player::Player(std::string name, const int id) :
 
 	else if (id == 2)
 		m_playerTank = new Tank(Vector2f(0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
-
-	m_playerRadians = Player::toPlayerRad(m_angle);
 }
 
 Player::~Player()
@@ -61,9 +57,4 @@ Weapon* Player::fireInTheHole()
 		m_angle, m_firePower);
 
 	return projectile;
-}
-
-float Player::toPlayerRad(float angl)
-{
-	return (angl * PI) / 180.0f;
 }

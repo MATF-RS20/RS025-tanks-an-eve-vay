@@ -13,11 +13,6 @@ private:
 	double m_time = 0.0f;
 	double m_radians;
 
-	float toRad(float angl);
-
-
-
-
 
 public:
 	Weapon(Vector2f position, Vector2f size, double playerAngle, double playerVelocity);

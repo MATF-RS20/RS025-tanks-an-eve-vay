@@ -1,21 +1,14 @@
 #include "Weapon.h"
 
-float Weapon::toRad(float angl)
-{
-	return (angl * PI) / 180.0f;
-}
-
 Weapon::Weapon(Vector2f position, Vector2f size, double playerAngle, double playerVelocity) :
-	Object(position, size) ,m_angle(playerAngle), m_velocity(playerVelocity) 
+	Object(position, size) ,m_angle(playerAngle), m_velocity(playerVelocity), m_radians(playerAngle)
 {
-	m_radians = toRad(playerAngle);
-	(*this).Move(Vector2f(0.0f, 0.05f));
-	
+	(*this).Move(Vector2f(0.01f, 0.05f));	
 }
 
 Vector2f Weapon::fly()
 {
-	m_time += 0.01;
+	m_time += 0.02;
 	
 	float x = m_velocity * cos(m_radians) * m_time;
 	float y = (m_velocity * sin(m_radians) * m_time) - GRAVITY*m_time*m_time*0.5;

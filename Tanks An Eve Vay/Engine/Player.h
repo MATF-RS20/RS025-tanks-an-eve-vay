@@ -15,13 +15,8 @@ private:
 	double m_health = 1.0; // in range [0.0, 1.0]
 	double m_firePower = 0.8; // in range [0.0, 1.0]
 	double m_angle = 45;
-	double m_playerRadians;
 	std::string m_playerName;
 	int m_uniqueID;
-
-	float toPlayerRad(float angl);
-	
-
 
 public:
 	Player();
