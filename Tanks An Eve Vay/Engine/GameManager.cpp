@@ -35,19 +35,11 @@ Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
 	{
-<<<<<<< HEAD
-		return Vector2f(0.0,0.0);
-	}
-	else
-	{
-		return Vector2f(0,0);
-=======
 		return m_Player1->GetTankPosition();
 	}
 	else
 	{
 		return m_Player2->GetTankPosition();
->>>>>>> master
 	}
 }
 
@@ -99,15 +91,34 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 	double yScale = 1.f - mousePosition.GetY() / 300.0f;
 
 	Vector2f playerPosition = GetPlayerPosition(1);
-	double k = (yScale - playerPosition.GetX()) / (xScale - playerPosition.GetY());
-	double radianAngle = std::atan(k);
+	double radianAngle = m_Player1->getAngle();
+	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
+	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY()) {
+		radianAngle = std::atan(k);
+		if (radianAngle < 0)
+		{
+			radianAngle += 3.141592653589793238463;
+		}
+
+		m_Player1->setAngle(radianAngle);
+	}
+	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY())
+	{
+		radianAngle = std::abs(std::atan(k));
+
+		m_Player1->setAngle(radianAngle);
+	}
+
+	
+	//double radianAngle = std::atan(k);
 	/*if (radianAngle < 0)
 	{
-		if (yScale > playerPosition.GetY() && yScale > 0)
+		if (yScale > playerPosition.GetY())
 		{
 			radianAngle += 3.1415926536;
 			m_Player1->setAngle(radianAngle);
 		}
+		
 	}
 	else
 	{
@@ -115,9 +126,14 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		{
 			m_Player1->setAngle(radianAngle);
 		}
+		else
+		{
+			radianAngle += 3.1415926536;
+			m_Player1->setAngle(radianAngle);
+		}
 
 	}*/
-	m_Player1->setAngle(radianAngle);
+	//m_Player1->setAngle(radianAngle);
 	OutputDebugStringA(std::to_string(m_Player1->getAngle()).c_str());
 	OutputDebugStringA("    ");
 
@@ -147,7 +163,7 @@ void GameManager::Fire()
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
 
-Terrain* GameManager::m_Map = new Terrain(100);
+Terrain* GameManager::m_Map = new Terrain(10);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 

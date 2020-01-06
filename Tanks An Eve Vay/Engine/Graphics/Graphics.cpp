@@ -35,7 +35,7 @@ void Graphics::RenderFrame()
 
 	//BEGIN DRAW REGION
 	
-	DrawMap();
+	//DrawMap();
 	DrawTank(1);
 	DrawTank(2);
 
@@ -177,6 +177,20 @@ void Graphics::DrawShape(Vertex array[],unsigned arraySize)
 	m_VertexBuffer->Release();
 }
 
+void Graphics::DrawMouseIndicator()
+{
+	double angle = GameManager::GetPlayerAngle();
+	Vector2f playerPosition = GameManager::GetPlayerPosition(1);
+	Vector2f playerSize = GameManager::GetPlayerSize(1);
+
+	Vertex line []
+	{
+		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()),
+		Vertex(0.5*std::cos(angle) + playerPosition.GetX(),0.5*std::sin(angle)+ playerPosition.GetY())
+	};
+	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
+}
+
 void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize)
 {
 	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
@@ -245,19 +259,20 @@ void Graphics::DrawTank(int player)
 		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
 		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
 
-	/*	Vertex(Rotx(-0.1,-0.05,angle),Roty(-0.1,-0.05,angle)),
-		Vertex(Rotx(-0.1,0.05,angle),Roty(-0.1,0.05,angle)),
-		Vertex(Rotx(0.1,0.05,angle),Roty(0.1,0.05,angle)),
+		/*Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle)),
+		Vertex(Rotx(-0.1,0.1,angle),Roty(-0.1,0.1,angle)),
+		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
 
-		Vertex(Rotx(0.1,0.05,angle),Roty(0.1,0.05,angle)),
-		Vertex(Rotx(0.1,-0.05,angle),Roty(0.1,-0.05,angle)),
-		Vertex(Rotx(-0.1,-0.05,angle),Roty(-0.1,-0.05,angle)),*/
+		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
+		Vertex(Rotx(0.1,0.0,angle),Roty(0.1,0.0,angle)),
+		Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle))*/
 
 	};
 
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
 	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
+	DrawMouseIndicator();
 }
 
 void Graphics::DrawMap()

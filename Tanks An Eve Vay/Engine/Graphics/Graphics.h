@@ -6,6 +6,7 @@
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"DirectXTK.lib")
 
+#define DEBUG
 
 class Graphics
 {
@@ -26,7 +27,8 @@ private:
 	void DrawMap();
 	void DrawGridPart(int i,int j);
 	void DrawProjectile();
-
+	void DrawShape(Vertex array[], unsigned arraySize);
+	void DrawMouseIndicator();
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
