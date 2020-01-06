@@ -47,6 +47,9 @@ void Engine::Update()
 		case 'd':
 			GameManager::MovePlayer(Vector2f(0.01f, 0.0f));
 			break;
+		case VK_SPACE:
+			GameManager::Fire();
+			break;
 		}
 	}
 

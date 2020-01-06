@@ -1,6 +1,6 @@
 #include "Weapon.h"
 
-float Weapon::toDegrees(float angl)
+float Weapon::toRad(float angl)
 {
 	return (angl * PI) / 180.0f;
 }
@@ -8,7 +8,7 @@ float Weapon::toDegrees(float angl)
 Weapon::Weapon(Vector2f position, Vector2f size, double playerAngle, double playerVelocity) :
 	Object(position, size) ,m_angle(playerAngle), m_velocity(playerVelocity) 
 {
-	m_radians = toDegrees(playerAngle);
+	m_radians = toRad(playerAngle);
 	(*this).Move(Vector2f(0.0f, 0.05f));
 	
 }

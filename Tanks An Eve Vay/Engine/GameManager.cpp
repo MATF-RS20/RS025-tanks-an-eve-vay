@@ -72,7 +72,7 @@ void GameManager::Initialize()
 	m_Map->FillTerrain(TerrainType::Flat);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
-	m_Projectile = m_Player1->fireInTheHole();
+	
 }
 
 float GameManager::ScaleRatioX()

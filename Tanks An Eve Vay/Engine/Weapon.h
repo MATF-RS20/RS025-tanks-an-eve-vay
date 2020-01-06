@@ -13,7 +13,7 @@ private:
 	double m_time = 0.0f;
 	double m_radians;
 
-	float toDegrees(float angl);
+	float toRad(float angl);
 
 
 
