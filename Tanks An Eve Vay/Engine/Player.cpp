@@ -1,8 +1,29 @@
 #include "Player.h"
 
-Player::Player()
-{
 
+
+Player::Player() {};
+
+Player::Player(Tank *t, std::string name, const int id) : 
+	m_playerTank(t),
+	m_playerName(name),
+	m_uniqueID(id)
+{}
+
+Player::Player(std::string name, const int id) :
+	m_playerName(name),
+	m_uniqueID(id)
+{
+	if (id == 1)
+		m_playerTank = new Tank(Vector2f(-0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
+
+	else if (id == 2)
+		m_playerTank = new Tank(Vector2f(0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
+}
+
+Player::~Player()
+{
+	delete m_playerTank;
 }
 
 Player::Player(Tank *t, std::string name, const int id) : m_playerTank(t),
@@ -30,4 +51,11 @@ void rotateTurret(double forAngle) {}
 void moveTank(int direction) {}
 
 // This function should call something with weapons and map?
-void fireInTheHole() {}
+Weapon* Player::fireInTheHole() 
+{
+	Weapon *projectile = new Weapon(m_playerTank->GetPosition(),
+									Vector2f(0.01f, 0.01f),
+									m_angle, m_firePower);
+
+	return projectile;
+}

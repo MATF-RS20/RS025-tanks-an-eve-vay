@@ -6,32 +6,45 @@
 #include "Vector2f.h"
 #include "Player.h"
 #include "Terrain.h"
+
+class Weapon;
+
 class GameManager
 {
 public:
-	static bool GetGridValue(int i, int j);
-
-	static Vector2f GetPlayerPosition(int player);
-
-	static void MovePlayer(int player, Vector2f dv);
 
 	static void Initialize();
 
+	static void MovePlayer(Vector2f dv);
+	static Vector2f GetPlayerPosition(int player);
+	static Vector2f GetPlayerSize(int player);
+
+	
 	static float ScaleRatioX();
 	static float ScaleRatioY();
 
 	static int GetMapN();
 	static int GetMapM();
 
-protected:
+	static void Fire();
+
+	static bool GetGridValue(int i, int j);
+	
+	static Vector2f GetProjectilePosition();
+	static Vector2f GetProjectileSize();
+	static bool Projectile();
+
+private:
+	static Terrain* m_Map;
 	static int m_MapSizeN;
 	static int m_MapSizeM;
-	static Terrain* m_Map;
-private:
 
-	static std::vector<std::vector<bool>> Matrix;
 	static Player *m_Player1;
 	static Player *m_Player2;
+
+	static int m_CurrentPlayer;
+
+	static Weapon* m_Projectile;
 
 };
 
