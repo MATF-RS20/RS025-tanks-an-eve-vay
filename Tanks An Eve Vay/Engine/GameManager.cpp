@@ -13,7 +13,7 @@ bool GameManager::GetGridValue(int i, int j) {
 		return false;
 
 	}
-	return m_Map->GetElement(i,j);
+	return m_Map->GetElement(i, j);
 }
 
 Vector2f GameManager::GetProjectilePosition()
@@ -35,11 +35,11 @@ Vector2f GameManager::GetPlayerPosition(int player)
 {
 	if (player == 1)
 	{
-		return Vector2f();
+		return m_Player1->GetTankPosition();
 	}
 	else
 	{
-		return Vector2f();
+		return m_Player2->GetTankPosition();
 	}
 }
 
@@ -106,6 +106,7 @@ int GameManager::m_MapSizeM = 0;
 Terrain* GameManager::m_Map = new Terrain(100);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
-int GameManager::m_CurrentPlayer = 1;
-Weapon * GameManager::m_Projectile = nullptr;
 
+int GameManager::m_CurrentPlayer = 1;
+
+Weapon * GameManager::m_Projectile = nullptr;
