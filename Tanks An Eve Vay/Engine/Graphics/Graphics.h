@@ -15,17 +15,17 @@ public:
 	void RenderFrame();
 	void DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize);
 
-protected:
-
-	void DrawShape(Vertex array[], unsigned arraySize);
-	void DrawTank(int player);
-	void DrawMap();
-	void DrawGridPart(int i, int j);
 
 private:
 
 	bool InitializeDirectX(HWND hwdn, int width, int height);
 	bool InitializeShaders();
+
+	
+	void DrawTank(int player);
+	void DrawMap();
+	void DrawGridPart(int i,int j);
+	void DrawProjectile();
 
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
