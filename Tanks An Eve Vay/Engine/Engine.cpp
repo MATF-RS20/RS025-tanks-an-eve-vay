@@ -56,6 +56,11 @@ void Engine::Update()
 	while (!m_Mouse.EventBuffer_IsEmpty())
 	{
 		MouseEvent me = m_Mouse.ReadNextEvent();
+		if (me.GetEventType() == MouseEvent::EventType::Move)
+		{
+			Vector2f position(me.GetMouseX(), me.GetMouseY());
+			GameManager::RotateTurret(position);
+		}
 	}
 }
 

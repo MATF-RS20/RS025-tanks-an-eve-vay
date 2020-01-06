@@ -23,6 +23,9 @@ public:
 	static float ScaleRatioX();
 	static float ScaleRatioY();
 
+	static void RotateTurret(Vector2f mousePosition);
+	static double GetPlayerAngle();
+
 	static int GetMapN();
 	static int GetMapM();
 

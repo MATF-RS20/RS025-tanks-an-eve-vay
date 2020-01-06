@@ -84,6 +84,65 @@ float GameManager::ScaleRatioY()
 {
 	return 2.f / m_MapSizeM;
 }
+void GameManager::RotateTurret(Vector2f mousePosition)
+{
+	//TODO mouse coord system need to be transfered to game coord system
+	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
+	double yScale = 1.f - mousePosition.GetY() / 300.0f;
+
+	Vector2f playerPosition = GetPlayerPosition(1);
+	double radianAngle = m_Player1->getAngle();
+	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
+	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY()) {
+		radianAngle = std::atan(k);
+		if (radianAngle < 0)
+		{
+			radianAngle += 3.141592653589793238463;
+		}
+
+		m_Player1->setAngle(radianAngle);
+	}
+	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY())
+	{
+		radianAngle = std::abs(std::atan(k));
+
+		m_Player1->setAngle(radianAngle);
+	}
+
+	
+	//double radianAngle = std::atan(k);
+	/*if (radianAngle < 0)
+	{
+		if (yScale > playerPosition.GetY())
+		{
+			radianAngle += 3.1415926536;
+			m_Player1->setAngle(radianAngle);
+		}
+		
+	}
+	else
+	{
+		if (yScale > playerPosition.GetY())
+		{
+			m_Player1->setAngle(radianAngle);
+		}
+		else
+		{
+			radianAngle += 3.1415926536;
+			m_Player1->setAngle(radianAngle);
+		}
+
+	}*/
+	//m_Player1->setAngle(radianAngle);
+	OutputDebugStringA(std::to_string(m_Player1->getAngle()).c_str());
+	OutputDebugStringA("    ");
+
+	//*(180.0 / 3.141592653589793238463)
+}
+double GameManager::GetPlayerAngle()
+{
+	return m_Player1->getAngle();
+}
 int GameManager::GetMapN()
 {
 	return m_MapSizeN;
@@ -103,10 +162,12 @@ void GameManager::Fire()
 
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
-Terrain* GameManager::m_Map = new Terrain(100);
+
+Terrain* GameManager::m_Map = new Terrain(10);
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 
 int GameManager::m_CurrentPlayer = 1;
 
 Weapon * GameManager::m_Projectile = nullptr;
+

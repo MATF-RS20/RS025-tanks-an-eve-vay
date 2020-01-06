@@ -5,6 +5,12 @@
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
 
+
+#define Rsin(x,y,angle) (std::sqrt(x*x+y*y) * std::sin(angle + std::abs(std::atan(y/x))))
+#define Rcos(x,y,angle) (std::sqrt(x*x+y*y) * std::cos(angle + std::abs(std::atan(y/x))))
+
+#define Rotx(x,y,angle) (x*std::cos(angle) - y*std::sin(angle))
+#define Roty(x,y,angle) (x*std::sin(angle) + y*std::cos(angle))
 bool Graphics::Initialize(HWND hwnd, int width, int height)
 {
 	if (!InitializeDirectX(hwnd, width, height))
@@ -29,7 +35,7 @@ void Graphics::RenderFrame()
 
 	//BEGIN DRAW REGION
 	
-	DrawMap();
+	//DrawMap();
 	DrawTank(1);
 	DrawTank(2);
 
@@ -94,7 +100,6 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 	}
 
 	hr = m_Device->CreateRenderTargetView(backBuffer.Get(), NULL, m_RenderTargetView.GetAddressOf());
-
 	if (FAILED(hr))
 	{
 		return false;
@@ -107,8 +112,8 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = width;
-	viewport.Height = height;
+	viewport.Width = static_cast<float>(width);
+	viewport.Height = static_cast<float>(height);
 
 	m_DeviceContext->RSSetViewports(1, &viewport);
 
@@ -119,7 +124,8 @@ bool Graphics::InitializeShaders()
 {
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT,0,0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0}
+		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT,0,0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0},
+		{"COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,0,D3D10_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0}
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -137,52 +143,28 @@ bool Graphics::InitializeShaders()
 	return true;
 }
 
-void Graphics::DrawTank(int player)
+void Graphics::DrawShape(Vertex array[],unsigned arraySize)
 {
-	float scalex = 0.1 /1.4f;
-	float scaley =  0.1/  0.5f;
-
-	Vector2f playerPosition = GameManager::GetPlayerPosition(player);
-	float playerX = playerPosition.GetX();
-	float playerY = playerPosition.GetY();
-	std::vector<Vertex> v
-	{
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.5f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.5f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.7f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.7f*scalex + playerX,0.3f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.3f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.0f*scaley + playerY)
-	};
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * v.size();
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * arraySize;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
 	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = v.data();
+	vertexBufferData.pSysMem = array;
 
 	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
 	if (FAILED(hr))
 	{
-		ErrorLogger::Log("Failed to draw tank");
+		ErrorLogger::Log("Failed to draw object");
 	}
 
 	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
 	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
@@ -191,15 +173,112 @@ void Graphics::DrawTank(int player)
 	UINT offset = 0;
 	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 
-
-	m_DeviceContext->Draw(v.size() , 0);
+	m_DeviceContext->Draw(arraySize, 0);
 	m_VertexBuffer->Release();
+}
+
+void Graphics::DrawMouseIndicator()
+{
+	double angle = GameManager::GetPlayerAngle();
+	Vector2f playerPosition = GameManager::GetPlayerPosition(1);
+	Vector2f playerSize = GameManager::GetPlayerSize(1);
+
+	Vertex line []
+	{
+		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()),
+		Vertex(0.5*std::cos(angle) + playerPosition.GetX(),0.5*std::sin(angle)+ playerPosition.GetY())
+	};
+	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
+}
+
+void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize)
+{
+	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
+	DrawShape(array,arraySize);
+}
+
+void Graphics::DrawTank(int player)
+{
+	float scalex = 0.1 / 1.4f;
+	float scaley = 0.1 / 0.5f;
+
+	Vector2f playerPosition = GameManager::GetPlayerPosition(player);
+	float playerX = static_cast<float>(playerPosition.GetX());
+	float playerY = static_cast<float>(playerPosition.GetY());
+
+	Vertex base[]
+	{
+		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
+		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
+		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
+
+		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
+		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
+		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
+	};
+
+	Vertex top[]
+	{
+		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
+		Vertex(-0.5f*scalex + playerX,0.4f*scaley + playerY),
+		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
+
+		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
+		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
+		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY)
+	};
+
+#ifdef DEBUG
+	Vertex system[] 
+	{
+		Vertex(-1,0),
+		Vertex(1,0),
+		Vertex(0,-1),
+		Vertex(0,1)
+	};
+	DrawShape(system, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST,ARRAYSIZE(system));
+#endif
+	//TODO: Fix to drawing that are more appropriate for rotation
+
+	double angle = GameManager::GetPlayerAngle();
+	//double fixScalex = scalex;
+	//double fixScaley = scaley;
+	//scaley *= std::sin(angle);
+	//scalex *= std::cos(angle);
+	
+	double angleSin = std::sin(angle);
+	double angleCos = std::cos(angle);
+
+	Vertex turret[]
+	{
+		Vertex(-0.2f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
+		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
+		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
+
+		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
+		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
+		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
+
+		/*Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle)),
+		Vertex(Rotx(-0.1,0.1,angle),Roty(-0.1,0.1,angle)),
+		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
+
+		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
+		Vertex(Rotx(0.1,0.0,angle),Roty(0.1,0.0,angle)),
+		Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle))*/
+
+	};
+
+	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
+	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
+	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
+	DrawMouseIndicator();
 }
 
 void Graphics::DrawMap()
 {
-	const int n = GameManager::GetMapN();
-	const int m = GameManager::GetMapM();
+	const unsigned n = GameManager::GetMapN();
+	const unsigned m = GameManager::GetMapM();
 	for (unsigned i = 0u; i < n; i++)
 	{
 		for (unsigned j = 0u; j < m; j++)
@@ -218,47 +297,17 @@ void Graphics::DrawGridPart(int i,int j)
 	j -= GameManager::GetMapM()/2;
 	float scaleRatioX = SCALE_RATIO_X;
 	float scaleRatioY = SCALE_RATIO_Y;
-	Vertex gridPart[] = {
-		Vertex(i*scaleRatioX, j*scaleRatioY),
-		Vertex((i+1)*scaleRatioX, j*scaleRatioY),
-		Vertex((i+1) * scaleRatioX, (j+1) *scaleRatioY),
-		Vertex(i*scaleRatioX,(j+1)*scaleRatioY),
-		Vertex(i*scaleRatioX,j*scaleRatioY)
-	};
-
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(gridPart);
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData;
-	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = gridPart;
-
-	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
-	if (FAILED(hr))
+	Vertex gridPart[] =
 	{
-		ErrorLogger::Log("Failed to draw tank");
-	}
-	
-	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		Vertex(i*scaleRatioX, j*scaleRatioY,0,0,1),
+		Vertex(i*scaleRatioX,(j + 1)*scaleRatioY,0,0,1),
+		Vertex((i + 1) * scaleRatioX, (j + 1) *scaleRatioY,0,0,1),
 
-	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
-	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
-
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
-
-
-	m_DeviceContext->Draw(ARRAYSIZE(gridPart), 0);
-	
-	m_VertexBuffer->Release();
+		Vertex(i*scaleRatioX, j*scaleRatioY,0,0,1),
+		Vertex((i + 1) * scaleRatioX, (j + 1) *scaleRatioY,0,0,1),
+		Vertex((i+1)*scaleRatioX, j*scaleRatioY,0,0,1),
+	};
+	DrawShape(gridPart, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST,ARRAYSIZE(gridPart));
 }
 
 void Graphics::DrawProjectile()
