@@ -30,12 +30,12 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
-	float bgColor[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	float bgColor[] = { 135.f/255.0f,206.0f/255.0f,250.0f/255.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), bgColor);
 
 	//BEGIN DRAW REGION
 	
-	//DrawMap();
+	DrawMap();
 	DrawTank(1);
 	DrawTank(2);
 
@@ -180,15 +180,25 @@ void Graphics::DrawShape(Vertex array[],unsigned arraySize)
 void Graphics::DrawMouseIndicator()
 {
 	double angle = GameManager::GetPlayerAngle();
-	Vector2f playerPosition = GameManager::GetPlayerPosition(1);
-	Vector2f playerSize = GameManager::GetPlayerSize(1);
+	int playerOnMove = GameManager::GetCurrentPlayer();
+	Vector2f playerPosition = GameManager::GetPlayerPosition(playerOnMove);
+	Vector2f playerSize = GameManager::GetPlayerSize(playerOnMove);
 
 	Vertex line []
 	{
-		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()),
-		Vertex(0.5*std::cos(angle) + playerPosition.GetX(),0.5*std::sin(angle)+ playerPosition.GetY())
+		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.1*std::cos(angle) + playerPosition.GetX(),0.1*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.15*std::cos(angle) + playerPosition.GetX(),0.15*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.20*std::cos(angle) + playerPosition.GetX(),0.20*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.25*std::cos(angle) + playerPosition.GetX(),0.25*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.30*std::cos(angle) + playerPosition.GetX(),0.30*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.35*std::cos(angle) + playerPosition.GetX(),0.35*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.40*std::cos(angle) + playerPosition.GetX(),0.40*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.45*std::cos(angle) + playerPosition.GetX(),0.45*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.50*std::cos(angle) + playerPosition.GetX(),0.50*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0)
 	};
-	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
+	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_POINTLIST, ARRAYSIZE(line));
 }
 
 void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize)

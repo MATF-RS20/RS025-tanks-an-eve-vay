@@ -31,6 +31,10 @@ public:
 
 	static void Fire();
 
+	static void ChangePlayer();
+
+	static int GetCurrentPlayer();
+
 	static bool GetGridValue(int i, int j);
 	
 	static Vector2f GetProjectilePosition();

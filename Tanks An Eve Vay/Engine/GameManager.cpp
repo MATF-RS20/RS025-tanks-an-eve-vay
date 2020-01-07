@@ -28,6 +28,16 @@ Vector2f GameManager::GetProjectileSize()
 
 bool GameManager::Projectile()
 {
+	if (m_Projectile == nullptr)
+		return false;
+
+	if ((m_Projectile->GetPosition().GetX() <= -1.0f) || (m_Projectile->GetPosition().GetX() >= 1.0f))
+	{
+		delete m_Projectile;
+		m_Projectile = nullptr;
+		GameManager::ChangePlayer();
+	}
+
 	return m_Projectile != nullptr;
 }
 
@@ -90,23 +100,33 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
 	double yScale = 1.f - mousePosition.GetY() / 300.0f;
 
-	Vector2f playerPosition = GetPlayerPosition(1);
-	double radianAngle = m_Player1->getAngle();
+	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
+	double radianAngle = 0.0f;
+	if(m_CurrentPlayer == 1)
+		radianAngle = m_Player1->getAngle();
+	else
+		radianAngle = m_Player2->getAngle();
 	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
-	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY()) {
+	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()) {
 		radianAngle = std::atan(k);
 		if (radianAngle < 0)
 		{
-			radianAngle += 3.141592653589793238463;
+			radianAngle += PI;
 		}
 
-		m_Player1->setAngle(radianAngle);
+		if(m_CurrentPlayer == 1)
+			m_Player1->setAngle(radianAngle);
+		else
+			m_Player2->setAngle(radianAngle);
 	}
-	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(1).GetY())
+	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())
 	{
 		radianAngle = std::abs(std::atan(k));
 
-		m_Player1->setAngle(radianAngle);
+		if (m_CurrentPlayer == 1)
+			m_Player1->setAngle(radianAngle);
+		else
+			m_Player2->setAngle(radianAngle);
 	}
 
 	
@@ -141,7 +161,10 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 }
 double GameManager::GetPlayerAngle()
 {
-	return m_Player1->getAngle();
+	if (m_CurrentPlayer == 1)
+		return m_Player1->getAngle();
+	else
+		return m_Player2->getAngle();
 }
 int GameManager::GetMapN()
 {
@@ -158,7 +181,25 @@ void GameManager::Fire()
 	{
 		m_Projectile = m_Player1->fireInTheHole();
 	}
+	else
+	{ 
+		m_Projectile = m_Player2->fireInTheHole();
+	}
 }
+
+void GameManager::ChangePlayer()
+{
+	if (m_CurrentPlayer == 1)
+		m_CurrentPlayer = 2;
+	else
+		m_CurrentPlayer = 1;
+}
+
+int GameManager::GetCurrentPlayer()
+{
+	return m_CurrentPlayer;
+}
+
 
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;

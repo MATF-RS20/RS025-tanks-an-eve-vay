@@ -39,16 +39,17 @@ void Engine::Update()
 		{
 		case VK_LEFT:
 		case 'A':
-		case 'a':
 			GameManager::MovePlayer(Vector2f(-0.01f, 0.0f));
 			break;
 		case VK_RIGHT:
 		case 'D':
-		case 'd':
 			GameManager::MovePlayer(Vector2f(0.01f, 0.0f));
 			break;
 		case VK_SPACE:
 			GameManager::Fire();
+			break;
+		case 'P':
+			GameManager::ChangePlayer();
 			break;
 		}
 	}
