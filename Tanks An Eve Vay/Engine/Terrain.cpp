@@ -84,6 +84,29 @@ void Terrain::FillTerrain(TerrainType type)
 		}
 		break;
 	}
+	case TerrainType::Hill:
+	{
+		unsigned hillStart = m_N / 4;
+		for (unsigned i = 0u; i < m_N; i++)
+		{
+			for (unsigned j = 0u; j < m_M / 5; j++)
+			{
+				m_TerrainMatrix[i][j] = true;
+			}
+
+		}
+		for (unsigned i = hillStart; i < 3 * m_N / 4; ++i)
+		{
+			for (unsigned j = m_M / 5; j < 3 * m_N / 4; j++)
+			{
+				if (i + j <= 3 * m_N / 4)
+				{
+					m_TerrainMatrix[i][j] = true;
+				}
+			}
+		}
+		break;
+	}
 	default:
 		break;
 	}

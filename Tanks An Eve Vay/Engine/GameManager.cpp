@@ -1,10 +1,6 @@
 #include "GameManager.h"
 #include "Tank.h"
 #include "Weapon.h"
-enum PlayerMove {
-	Left,
-	Right
-};
 
 bool GameManager::GetGridValue(int i, int j) {
 	if (i >= m_MapSizeN || j >= m_MapSizeM || i < 0 || j < 0)
@@ -79,10 +75,9 @@ void GameManager::MovePlayer(Vector2f dv)
 
 void GameManager::Initialize()
 {
-	m_Map->FillTerrain(TerrainType::Flat);
+	m_Map->FillTerrain(TerrainType::Hill);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
-	
 }
 
 float GameManager::ScaleRatioX()
@@ -128,37 +123,12 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		else
 			m_Player2->setAngle(radianAngle);
 	}
-
-	
-	//double radianAngle = std::atan(k);
-	/*if (radianAngle < 0)
-	{
-		if (yScale > playerPosition.GetY())
-		{
-			radianAngle += 3.1415926536;
-			m_Player1->setAngle(radianAngle);
-		}
-		
-	}
-	else
-	{
-		if (yScale > playerPosition.GetY())
-		{
-			m_Player1->setAngle(radianAngle);
-		}
-		else
-		{
-			radianAngle += 3.1415926536;
-			m_Player1->setAngle(radianAngle);
-		}
-
-	}*/
-	//m_Player1->setAngle(radianAngle);
+#ifdef DEBUG
 	OutputDebugStringA(std::to_string(m_Player1->getAngle()).c_str());
 	OutputDebugStringA("    ");
-
-	//*(180.0 / 3.141592653589793238463)
+#endif
 }
+
 double GameManager::GetPlayerAngle()
 {
 	if (m_CurrentPlayer == 1)
@@ -166,10 +136,12 @@ double GameManager::GetPlayerAngle()
 	else
 		return m_Player2->getAngle();
 }
+
 int GameManager::GetMapN()
 {
 	return m_MapSizeN;
 }
+
 int GameManager::GetMapM()
 {
 	return m_MapSizeM;
@@ -200,15 +172,14 @@ int GameManager::GetCurrentPlayer()
 	return m_CurrentPlayer;
 }
 
-
-int GameManager::m_MapSizeN = 0;
-int GameManager::m_MapSizeM = 0;
-
-Terrain* GameManager::m_Map = new Terrain(10);
+//Initializing of static class member
+int GameManager::m_CurrentPlayer = 1;
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 
-int GameManager::m_CurrentPlayer = 1;
+Terrain* GameManager::m_Map = new Terrain(250);
+int GameManager::m_MapSizeN = 0;
+int GameManager::m_MapSizeM = 0;
 
 Weapon * GameManager::m_Projectile = nullptr;
 
