@@ -11,6 +11,7 @@
 
 #define Rotx(x,y,angle) (x*std::cos(angle) - y*std::sin(angle))
 #define Roty(x,y,angle) (x*std::sin(angle) + y*std::cos(angle))
+
 bool Graphics::Initialize(HWND hwnd, int width, int height)
 {
 	if (!InitializeDirectX(hwnd, width, height))
@@ -24,6 +25,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	}
 
 	GameManager::Initialize();
+	UpdateMapState();
 
 	return true;
 }
@@ -93,6 +95,7 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+	
 	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(backBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
@@ -141,6 +144,44 @@ bool Graphics::InitializeShaders()
 	}
 
 	return true;
+}
+
+void Graphics::UpdateMapState()
+{
+	m_Data = std::vector<Vertex>(400000);
+	const unsigned n = GameManager::GetMapN();
+	const unsigned m = GameManager::GetMapM();
+	float scaleRatioX = SCALE_RATIO_X;
+	float scaleRatioY = SCALE_RATIO_Y;
+	unsigned vectorSize = 0;
+	for (unsigned i = 0u; i < n; i++)
+	{
+		for (unsigned j = 0u; j < m; j++)
+		{
+			if (GameManager::GetGridValue(i, j))
+			{
+				int ii = i - n / 2;
+				int jj = j - m / 2;
+
+				Vertex gridPart[] =
+				{
+					Vertex(ii*scaleRatioX, jj*scaleRatioY,0,0,1),
+					Vertex(ii*scaleRatioX,(jj + 1)*scaleRatioY,0,0,1),
+					Vertex((ii + 1) * scaleRatioX, (jj + 1) *scaleRatioY,0,0,1),
+
+					Vertex(ii*scaleRatioX, jj*scaleRatioY,0,0,1),
+					Vertex((ii + 1) * scaleRatioX, (jj + 1) *scaleRatioY,0,0,1),
+					Vertex((ii + 1)*scaleRatioX, jj*scaleRatioY,0,0,1),
+				};
+				for (int k = 0; k < 6; k++)
+				{
+					m_Data[vectorSize] = gridPart[k];
+					vectorSize++;
+				}
+			}
+		}
+	}
+	m_DataSize = vectorSize;
 }
 
 void Graphics::DrawShape(Vertex array[],unsigned arraySize)
@@ -251,11 +292,7 @@ void Graphics::DrawTank(int player)
 	//TODO: Fix to drawing that are more appropriate for rotation
 
 	double angle = GameManager::GetPlayerAngle();
-	//double fixScalex = scalex;
-	//double fixScaley = scaley;
-	//scaley *= std::sin(angle);
-	//scalex *= std::cos(angle);
-	
+
 	double angleSin = std::sin(angle);
 	double angleCos = std::cos(angle);
 
@@ -287,18 +324,38 @@ void Graphics::DrawTank(int player)
 
 void Graphics::DrawMap()
 {
-	const unsigned n = GameManager::GetMapN();
-	const unsigned m = GameManager::GetMapM();
-	for (unsigned i = 0u; i < n; i++)
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * m_DataSize;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData;
+	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
+	vertexBufferData.pSysMem = m_Data.data();
+
+	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
+	if (FAILED(hr))
 	{
-		for (unsigned j = 0u; j < m; j++)
-		{
-			if (GameManager::GetGridValue(i, j))
-			{
-				DrawGridPart(i, j);
-			}
-		}
+		ErrorLogger::Log("Failed to initialize vertex buffer");
 	}
+	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
+	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
+	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
+
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
+	m_DeviceContext->Draw(4, 0);
+	for (unsigned i = 0; i < m_DataSize; i += 3)
+	{
+		m_DeviceContext->Draw(3, i);
+	}
+	m_VertexBuffer->Release();
 }
 
 void Graphics::DrawGridPart(int i,int j)
