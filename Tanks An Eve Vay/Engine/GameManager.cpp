@@ -340,10 +340,15 @@ void GameManager::Fire()
 
 void GameManager::ChangePlayer()
 {
+	GameManager::SetMovesDefault();
 	if (m_CurrentPlayer == 1)
+	{
 		m_CurrentPlayer = 2;
+	}
 	else
+	{
 		m_CurrentPlayer = 1;
+	}
 }
 
 int GameManager::GetCurrentPlayer()

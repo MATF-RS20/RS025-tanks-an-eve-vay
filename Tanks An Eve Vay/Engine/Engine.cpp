@@ -39,7 +39,7 @@ void Engine::Update()
 		{
 		case VK_LEFT:
 		case 'A':
-			if(GameManager::MovesLeft() > 0)
+			if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
 			{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(LEFT);
@@ -48,7 +48,7 @@ void Engine::Update()
 			break;
 		case VK_RIGHT:
 		case 'D':
-			if (GameManager::MovesLeft() > 0)
+			if (GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
 			{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(RIGHT);
@@ -57,7 +57,6 @@ void Engine::Update()
 		case VK_SPACE:
 			if (GameManager::CanFire() == true)
 			{
-				GameManager::SetMovesDefault();
 				GameManager::Fire();
 			}
 			break;
