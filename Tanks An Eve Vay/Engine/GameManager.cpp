@@ -117,10 +117,9 @@ Vector2f GameManager::GetPlayerSize(int player)
 	}
 }
 
-void GameManager::MovePlayer(Vector2f dv)
+Vector2f GameManager::MovePlayer(int player)
 {
-
-	if (m_CurrentPlayer == 1)
+	/*if (m_CurrentPlayer == 1)
 	{
 		if(m_Player1->getCanFire())
 			m_Player1->moveMyTank(dv);
@@ -129,7 +128,64 @@ void GameManager::MovePlayer(Vector2f dv)
 	{
 		if (m_Player2->getCanFire())
 			m_Player2->moveMyTank(dv);
+	}*/
+
+	if (player == 1)
+	{
+		if (m_CurrentPlayer == 1)
+		{
+			if (m_possibleMoves > 0 && m_Player1->getCanFire())
+			{
+				if (m_nextMove == LEFT)
+				{
+					m_Player1->moveMyTank(Vector2f(-0.005,0));
+				}
+				else if (m_nextMove == RIGHT)
+				{
+					m_Player1->moveMyTank(Vector2f(0.005, 0));
+				}
+
+				m_possibleMoves--;
+			}
+
+			return m_Player1->GetTankPosition();
+		}
+
+		else
+		{
+			return m_Player1->GetTankPosition();
+		}
 	}
+
+
+
+	else if (player == 2)
+	{
+		if(m_CurrentPlayer == 2)
+		{
+			if (m_possibleMoves > 0 && m_Player2->getCanFire())
+			{
+				if (m_nextMove == LEFT)
+				{
+					m_Player2->moveMyTank(Vector2f(-0.005, 0));
+				}
+				else if (m_nextMove == RIGHT)
+				{
+					m_Player2->moveMyTank(Vector2f(0.005, 0));
+				}
+				m_possibleMoves--;
+			}
+
+			return m_Player2->GetTankPosition();
+		}
+		else
+		{
+			return m_Player2->GetTankPosition();
+		}
+	}
+
+	else
+		return m_Player2->GetTankPosition();
 }
 
 float GameManager::ScaleRatioX()
@@ -253,6 +309,63 @@ void GameManager::UpdateTerrainOutline()
 	}
 }
 
+void GameManager::AllowMove(PlayerMovement side)
+{
+	m_nextMove = side;
+	if(m_Projectile == nullptr)
+		m_possibleMoves = 10;
+	else
+		m_possibleMoves = 0;
+}
+
+bool GameManager::CanFire()
+{
+	if (m_possibleMoves == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int GameManager::MovesLeft()
+{
+	if (m_CurrentPlayer == 1)
+	{
+		return m_Player1->getMoves();
+	}
+	else if (m_CurrentPlayer == 2)
+	{
+		return m_Player2->getMoves();
+	}
+}
+
+void GameManager::ReduceMoves()
+{
+	if (m_CurrentPlayer == 1)
+	{
+		m_Player1->setMoves(m_Player1->getMoves()-1);
+	}
+	else if (m_CurrentPlayer == 2)
+	{
+		m_Player2->setMoves(m_Player2->getMoves() - 1);
+	}
+}
+
+void GameManager::SetMovesDefault()
+{
+	if (m_CurrentPlayer == 1)
+	{
+		m_Player1->setMoves(3);
+	}
+	else if (m_CurrentPlayer == 2)
+	{
+		m_Player2->setMoves(3);
+	}
+}
+
 
 
 //Initializing of static class member
@@ -263,6 +376,9 @@ Player* GameManager::m_Player2 = new Player("Player2", 2);
 Terrain* GameManager::m_Map = new Terrain(200);
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
+
+PlayerMovement GameManager::m_nextMove = INVALID;
+int GameManager::m_possibleMoves = 0;
 
 Weapon * GameManager::m_Projectile = nullptr;
 

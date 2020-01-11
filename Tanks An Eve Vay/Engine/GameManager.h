@@ -10,13 +10,20 @@ class Player;
 class Terrain;
 class Weapon;
 
+enum PlayerMovement
+{
+	LEFT,
+	RIGHT,
+	INVALID
+};
+
 class GameManager
 {
 public:
 
 	static void Initialize();
 
-	static void MovePlayer(Vector2f dv);
+	static Vector2f MovePlayer(int player);
 	static Vector2f GetPlayerPosition(int player);
 	static Vector2f GetPlayerSize(int player);
 
@@ -44,6 +51,16 @@ public:
 	static bool CheckCollision();
 	static void UpdateTerrainOutline();
 
+	static void AllowMove(PlayerMovement side);
+
+	static bool CanFire();
+
+	static int MovesLeft();
+
+	static void ReduceMoves();
+
+	static void SetMovesDefault();
+
 private:
 	static Terrain* m_Map;
 	static int m_MapSizeN;
@@ -57,5 +74,8 @@ private:
 	static Weapon* m_Projectile;
 
 	static std::map<unsigned, unsigned>* m_Outline;
+
+	static int m_possibleMoves;
+	static PlayerMovement m_nextMove;
 };
 

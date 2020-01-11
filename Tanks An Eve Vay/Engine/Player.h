@@ -20,6 +20,7 @@ private:
 	std::string m_playerName;
 	int m_uniqueID;
 	bool m_canFire = false;
+	int m_movesLeft = 3;
 
 public:
 	Player();
@@ -36,6 +37,7 @@ public:
 	const int getID();
 	Vector2f GetTankPosition();
 	bool getCanFire();
+	int getMoves();
 
 
 	// Setters
@@ -43,6 +45,7 @@ public:
 	void setFirePower(double power);
 	void setAngle(double angle);
 	void setCanFire(bool x);
+	void setMoves(int mov);
 
 
 	void rotateTurret(double forAngle);
