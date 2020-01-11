@@ -6,6 +6,7 @@
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
 
+#define PI (atan(1.0f)*4.0f)
 
 #define Rsin(x,y,angle) (std::sqrt(x*x+y*y) * std::sin(angle + std::abs(std::atan(y/x))))
 #define Rcos(x,y,angle) (std::sqrt(x*x+y*y) * std::cos(angle + std::abs(std::atan(y/x))))
@@ -204,22 +205,32 @@ void Graphics::DrawStats()
 	std::string player2Name = "Mika";
 	int player1Health = 100;
 	int player2Health = 100;
-	int player1Angle = 0;
-	int player2Angle = 0;
-	std::string playerBar = "Player: ";
-	std::string playerName = "Name : ";
-	std::string playerHealth = "Health: ";
-	std::string playerAngle = "Angle: ";
+	int currentPlayer = GameManager::GetCurrentPlayer();
+	double playerAngle = GameManager::GetPlayerAngle() * 180 / PI;
+	double playerPower = 0;
+	std::string playerBarStr = "Player: ";
+	std::string playerNameStr = "Name : ";
+	std::string playerHealthStr = "Health: ";
+	std::string playerAngleStr = "Angle: ";
+	std::string playerPowerStr = "Power: ";
 
-	DrawTextOnScreen(playerBar, Vector2f(20, 20));
-	DrawTextOnScreen(playerName + player1Name, Vector2f(20, 40));
-	DrawTextOnScreen(playerHealth + std::to_string(player1Health), Vector2f(20, 60));
-	DrawTextOnScreen(playerAngle + std::to_string(player1Angle), Vector2f(20, 80));
+	DrawTextOnScreen(playerBarStr, Vector2f(20, 20));
+	DrawTextOnScreen(playerNameStr + player1Name, Vector2f(20, 40));
+	DrawTextOnScreen(playerHealthStr + std::to_string(player1Health), Vector2f(20, 60));
+	if (currentPlayer == 1)
+	{
+		DrawTextOnScreen(playerAngleStr + std::to_string(playerAngle), Vector2f(20, 80));
+		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(20, 100));
+	}
 
-	DrawTextOnScreen(playerBar, Vector2f(m_ViewWidth-150, 20));
-	DrawTextOnScreen(playerName + player2Name, Vector2f(m_ViewWidth - 150, 40));
-	DrawTextOnScreen(playerHealth + std::to_string(player2Health), Vector2f(m_ViewWidth - 150, 60));
-	DrawTextOnScreen(playerAngle + std::to_string(player2Angle), Vector2f(m_ViewWidth - 150, 80));
+	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth-150, 20));
+	DrawTextOnScreen(playerNameStr + player2Name, Vector2f(m_ViewWidth - 150, 40));
+	DrawTextOnScreen(playerHealthStr + std::to_string(player2Health), Vector2f(m_ViewWidth - 150, 60));
+	if (currentPlayer == 2)
+	{
+		DrawTextOnScreen(playerAngleStr + std::to_string(playerAngle), Vector2f(m_ViewWidth - 150, 80));
+		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 150, 100));
+	}
 
 }
 
