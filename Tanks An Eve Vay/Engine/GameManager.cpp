@@ -53,6 +53,27 @@ bool GameManager::Projectile()
 
 bool GameManager::CheckCollision()
 {
+	Vector2f tankPosition;
+	Vector2f tankSize;
+
+	if (m_CurrentPlayer == 1)
+	{
+		tankPosition = m_Player2->GetTankPosition();
+		tankSize = m_Player2->GetTankSize();
+	}
+
+	if (m_CurrentPlayer == 2)
+	{
+		tankPosition = m_Player1->GetTankPosition();
+		tankSize = m_Player1->GetTankSize();
+	}
+
+	double tankX = tankPosition.GetX();
+	double tankY = tankPosition.GetY();
+	double tankWidth = tankSize.GetX();
+	double tankHeight = tankSize.GetY();
+
+	
 	Vector2f objectPostion = m_Projectile->GetPosition();
 	Vector2f objectSize = m_Projectile->GetSize();
 	Vector2f BlastRadious = Vector2f(5, 5); //TODO Link to Projectile Blast Radious
@@ -60,12 +81,34 @@ bool GameManager::CheckCollision()
 	double b = (Coords(objectPostion.GetY() - objectSize.GetY() / 2));
 	double c = (Coords(objectPostion.GetX() + objectSize.GetX() / 2));
 	double d = (Coords(objectPostion.GetY() + objectSize.GetY() / 2));
+
+	double aMaloX = objectPostion.GetX();
+	double aMaloY = objectPostion.GetY();
+	double aMaloW = objectSize.GetX();
+	double aMaloH = objectSize.GetY();
+
+
 	if (a < 0 || b < 0 || c < 0 || d < 0 )
 	{
 		return false;
 	}
 	if (a < m_MapSizeN && c < m_MapSizeN)
 	{
+
+		if ((tankX < aMaloX + aMaloW) && (aMaloX < tankX + tankWidth)
+			&& (tankY < aMaloY + aMaloH) && (aMaloY < tankY + tankHeight))
+		{
+			if (m_CurrentPlayer == 1)
+			{
+				m_Player2->setHealth(m_Player2->getHealth() - 10);
+			}
+
+			else if (m_CurrentPlayer == 2)
+			{
+				m_Player1->setHealth(m_Player1->getHealth() - 10);
+			}
+		}
+
 
 		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
 		{
@@ -85,6 +128,8 @@ bool GameManager::CheckCollision()
 			{
 				d += BlastRadious.GetY();
 			}
+
+			
 
 			m_Map->DestroyTerrain(a, b, c, d);
 			delete m_Projectile;
@@ -296,7 +341,7 @@ double GameManager::GetPlayerAngle()
 
 int GameManager::GetPlayerHealth(int player)
 {
-	if (m_CurrentPlayer == 1)
+	if (player == 1)
 	{
 		return m_Player1->getHealth();
 	}

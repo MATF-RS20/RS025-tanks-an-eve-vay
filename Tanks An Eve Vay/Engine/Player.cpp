@@ -33,7 +33,7 @@ std::string Player::getPlayerName() { return m_playerName; }
 Tank& Player::getPlayerTank() { return *m_playerTank; }
 const int Player::getID() { return m_uniqueID; }
 Vector2f Player::GetTankPosition() { return (*this).getPlayerTank().GetPosition(); }
-
+Vector2f Player::GetTankSize() { return (*this).getPlayerTank().GetSize(); }
 bool Player::getCanFire()
 {
 	return m_canFire;

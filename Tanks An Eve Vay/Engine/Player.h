@@ -34,6 +34,7 @@ public:
 	Tank &getPlayerTank();
 	const int getID();
 	Vector2f GetTankPosition();
+	Vector2f GetTankSize();
 	bool getCanFire();
 	int getMoves();
 
