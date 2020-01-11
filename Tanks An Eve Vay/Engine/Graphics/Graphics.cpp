@@ -206,8 +206,8 @@ void Graphics::DrawStats()
 	int player1Health = GameManager::GetPlayerHealth(1);
 	int player2Health = GameManager::GetPlayerHealth(2);
 	int currentPlayer = GameManager::GetCurrentPlayer();
-	double playerAngle = GameManager::GetPlayerAngle() * 180 / PI;
-	double playerPower = GameManager::GetPlayerPower();
+	int playerAngle = static_cast<int>(GameManager::GetPlayerAngle() * 180 / PI);
+	int playerPower = static_cast<int>(GameManager::GetPlayerPower()*100);
 	int leftMoves = GameManager::MovesLeft();
 	std::string playerBarStr = "Player: ";
 	std::string playerNameStr = "Name : ";
@@ -227,15 +227,15 @@ void Graphics::DrawStats()
 		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(20, 120));
 	}
 
-	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth-150, 20));
-	DrawTextOnScreen(playerNameStr + player2Name, Vector2f(m_ViewWidth - 150, 40));
-	DrawTextOnScreen(playerHealthStr + std::to_string(player2Health), Vector2f(m_ViewWidth - 150, 60));
+	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth-200, 20));
+	DrawTextOnScreen(playerNameStr + player2Name, Vector2f(m_ViewWidth - 200, 40));
+	DrawTextOnScreen(playerHealthStr + std::to_string(player2Health), Vector2f(m_ViewWidth - 200, 60));
 
 	if (currentPlayer == 2)
 	{
-		DrawTextOnScreen(playerAngleStr + std::to_string(180-playerAngle), Vector2f(m_ViewWidth - 150, 80));
-		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 150, 100));
-		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(m_ViewWidth - 150, 120));
+		DrawTextOnScreen(playerAngleStr + std::to_string(180-playerAngle), Vector2f(m_ViewWidth - 200, 80));
+		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 200, 100));
+		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(m_ViewWidth - 200, 120));
 	}
 }
 
