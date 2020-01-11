@@ -8,6 +8,7 @@
 
 void GameManager::Initialize()
 {
+  m_Player1->setCanFire(true);
 	m_Map->FillTerrain(TerrainType::Hill);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
@@ -118,13 +119,16 @@ Vector2f GameManager::GetPlayerSize(int player)
 
 void GameManager::MovePlayer(Vector2f dv)
 {
+
 	if (m_CurrentPlayer == 1)
 	{
-		m_Player1->moveMyTank(dv);
+		if(m_Player1->getCanFire())
+			m_Player1->moveMyTank(dv);
 	}
 	else if (m_CurrentPlayer == 2)
 	{
-		m_Player2->moveMyTank(dv);
+		if (m_Player2->getCanFire())
+			m_Player2->moveMyTank(dv);
 	}
 }
 
@@ -198,11 +202,21 @@ void GameManager::Fire()
 {
 	if (m_CurrentPlayer == 1)
 	{
-		m_Projectile = m_Player1->fireInTheHole();
+		if (m_Player1->getCanFire())
+		{
+			m_Player1->setCanFire(false);
+			m_Player2->setCanFire(true);
+			m_Projectile = m_Player1->fireInTheHole();
+		}
 	}
 	else
-	{ 
-		m_Projectile = m_Player2->fireInTheHole();
+	{
+		if (m_Player2->getCanFire())
+		{
+			m_Player2->setCanFire(false);
+			m_Player1->setCanFire(true);
+			m_Projectile = m_Player2->fireInTheHole();
+		}
 	}
 }
 

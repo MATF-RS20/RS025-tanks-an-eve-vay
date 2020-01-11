@@ -34,9 +34,19 @@ Tank& Player::getPlayerTank() { return *m_playerTank; }
 const int Player::getID() { return m_uniqueID; }
 Vector2f Player::GetTankPosition() { return (*this).getPlayerTank().GetPosition(); }
 
+bool Player::getCanFire()
+{
+	return m_canFire;
+}
+
 void Player::setHealth(double hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
 void Player::setAngle(double angle) { m_angle = angle; }
+
+void Player::setCanFire(bool x)
+{
+	m_canFire = x;
+}
 
 bool Player::amDead()
 {
