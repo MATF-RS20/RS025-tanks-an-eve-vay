@@ -39,6 +39,11 @@ bool Player::getCanFire()
 	return m_canFire;
 }
 
+
+int Player::getMoves()
+{
+	return m_movesLeft;
+}
 void Player::setHealth(int hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
 void Player::setAngle(double angle) { m_angle = angle; }
@@ -48,7 +53,12 @@ void Player::setCanFire(bool x)
 	m_canFire = x;
 }
 
-bool Player::amDead()
+void Player::setMoves(int mov)
+{
+	m_movesLeft = mov;
+}
+
+bool Player::amIDead()
 {
 	return !(m_health); // False means Player is not dead ( yet :D )
 }

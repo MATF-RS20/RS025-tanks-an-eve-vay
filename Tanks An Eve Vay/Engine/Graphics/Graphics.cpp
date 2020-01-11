@@ -311,7 +311,7 @@ void Graphics::DrawTank(int player)
 	float scalex = 0.1 / 1.4f;
 	float scaley = 0.1 / 0.5f;
 
-	Vector2f playerPosition = GameManager::GetPlayerPosition(player);
+	Vector2f playerPosition = GameManager::MovePlayer(player);
 	float playerX = static_cast<float>(playerPosition.GetX());
 	float playerY = static_cast<float>(playerPosition.GetY());
 

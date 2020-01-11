@@ -39,14 +39,27 @@ void Engine::Update()
 		{
 		case VK_LEFT:
 		case 'A':
-			GameManager::MovePlayer(Vector2f(-0.01f, 0.0f));
+			if(GameManager::MovesLeft() > 0)
+			{
+				GameManager::ReduceMoves();
+				GameManager::AllowMove(LEFT);
+			}
+			
 			break;
 		case VK_RIGHT:
 		case 'D':
-			GameManager::MovePlayer(Vector2f(0.01f, 0.0f));
+			if (GameManager::MovesLeft() > 0)
+			{
+				GameManager::ReduceMoves();
+				GameManager::AllowMove(RIGHT);
+			}
 			break;
 		case VK_SPACE:
-			GameManager::Fire();
+			if (GameManager::CanFire() == true)
+			{
+				GameManager::SetMovesDefault();
+				GameManager::Fire();
+			}
 			break;
 		case 'P':
 			GameManager::ChangePlayer();
