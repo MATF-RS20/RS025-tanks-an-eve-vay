@@ -48,7 +48,7 @@ public:
 
 	void rotateTurret(double forAngle);
 	void moveMyTank(Vector2f dv);
-	bool amDead();
+	bool amIDead();
 	Weapon* fireInTheHole();
 }; // ClASS PLAYER
 

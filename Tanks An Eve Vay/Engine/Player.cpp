@@ -58,7 +58,7 @@ void Player::setMoves(int mov)
 	m_movesLeft = mov;
 }
 
-bool Player::amDead()
+bool Player::amIDead()
 {
 	return !(m_health); // False means Player is not dead ( yet :D )
 }
