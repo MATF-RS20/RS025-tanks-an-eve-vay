@@ -5,6 +5,7 @@
 #include "Weapon.h"
 
 #define Coords(x) ((m_MapSizeN*(x))/2.0f+(m_MapSizeN/2.0f))
+#define lineLength(x1,y1,x2,y2) (std::sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)))
 
 void GameManager::Initialize()
 {
@@ -204,10 +205,14 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 
 	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
 	double radianAngle = 0.0f;
-	if(m_CurrentPlayer == 1)
+	if (m_CurrentPlayer == 1)
+	{
 		radianAngle = m_Player1->getAngle();
+	}
 	else
+	{
 		radianAngle = m_Player2->getAngle();
+	}
 	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
 	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()) {
 		radianAngle = std::atan(k);
@@ -215,25 +220,68 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		{
 			radianAngle += PI;
 		}
+		
+		double power = lineLength(playerPosition.GetX(), playerPosition.GetY(), xScale, yScale);
+		if (power > 1.0)
+		{
+			power = 1.0;
+		}
 
-		if(m_CurrentPlayer == 1)
+		if (m_CurrentPlayer == 1)
+		{
 			m_Player1->setAngle(radianAngle);
+			m_Player1->setFirePower(power);
+		}
 		else
+		{
 			m_Player2->setAngle(radianAngle);
+			m_Player2->setFirePower(power);
+		}
+		OutputDebugStringA(std::to_string(power).c_str());
 	}
 	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())
 	{
 		radianAngle = std::abs(std::atan(k));
 
+		double power = lineLength(playerPosition.GetX(), playerPosition.GetY(), xScale, yScale);
+		if (power > 1.0)
+		{
+			power = 1.0;
+		}
+
 		if (m_CurrentPlayer == 1)
+		{
 			m_Player1->setAngle(radianAngle);
+			m_Player1->setFirePower(power);
+		}
 		else
+		{
 			m_Player2->setAngle(radianAngle);
+			m_Player2->setFirePower(power);
+		}
+		
 	}
 #ifdef DEBUG
 	OutputDebugStringA(std::to_string(m_Player1->getAngle()).c_str());
 	OutputDebugStringA("    ");
 #endif
+}
+
+double GameManager::GetPlayerPower()
+{
+	if (m_CurrentPlayer == 1)
+		return m_Player1->getFirePower();
+	else
+		return m_Player2->getFirePower();
+}
+
+std::string GameManager::GetPlayerName(int num)
+{
+	if (num == 1)
+		return m_Player1->getPlayerName();
+	else if (num == 2)
+		return m_Player2->getPlayerName();
+	else return 0;
 }
 
 double GameManager::GetPlayerAngle()
@@ -242,6 +290,18 @@ double GameManager::GetPlayerAngle()
 		return m_Player1->getAngle();
 	else
 		return m_Player2->getAngle();
+}
+
+int GameManager::GetPlayerHealth(int player)
+{
+	if (m_CurrentPlayer == 1)
+	{
+		return m_Player1->getHealth();
+	}
+	else
+	{
+		return m_Player2->getHealth();
+	}
 }
 
 int GameManager::GetMapN()

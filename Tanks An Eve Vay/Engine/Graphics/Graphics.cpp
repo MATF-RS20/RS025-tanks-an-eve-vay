@@ -1,10 +1,12 @@
 #include "Graphics.h"
 #include <vector>
 #include "..\\GameManager.h"
+#include <DirectXMath.h>
 
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
 
+#define PI (atan(1.0f)*4.0f)
 
 #define Rsin(x,y,angle) (std::sqrt(x*x+y*y) * std::sin(angle + std::abs(std::atan(y/x))))
 #define Rcos(x,y,angle) (std::sqrt(x*x+y*y) * std::cos(angle + std::abs(std::atan(y/x))))
@@ -23,6 +25,9 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	{
 		return false;
 	}
+
+	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
+	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
 
 	m_Data = std::vector<Vertex>(60000);
 	GameManager::Initialize();
@@ -53,6 +58,7 @@ void Graphics::RenderFrame()
 			GameManager::UpdateTerrainOutline();
 		}
 	}
+	DrawStats();
 	//END DRAW REGION
 
 	m_SwapChain->Present(1, NULL);
@@ -127,6 +133,9 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 
 	m_DeviceContext->RSSetViewports(1, &viewport);
 
+	m_ViewHeight = height;
+	m_ViewWidth = width;
+
 	return true;
 }
 
@@ -188,6 +197,41 @@ void Graphics::UpdateMapState()
 		}
 	}
 	m_DataSize = vectorSize;
+}
+
+void Graphics::DrawStats()
+{
+	std::string player1Name = GameManager::GetPlayerName(1);
+	std::string player2Name = GameManager::GetPlayerName(1);
+	int player1Health = GameManager::GetPlayerHealth(1);
+	int player2Health = GameManager::GetPlayerHealth(2);
+	int currentPlayer = GameManager::GetCurrentPlayer();
+	double playerAngle = GameManager::GetPlayerAngle() * 180 / PI;
+	double playerPower = GameManager::GetPlayerPower();
+	std::string playerBarStr = "Player: ";
+	std::string playerNameStr = "Name : ";
+	std::string playerHealthStr = "Health: ";
+	std::string playerAngleStr = "Angle: ";
+	std::string playerPowerStr = "Power: ";
+
+	DrawTextOnScreen(playerBarStr, Vector2f(20, 20));
+	DrawTextOnScreen(playerNameStr + player1Name, Vector2f(20, 40));
+	DrawTextOnScreen(playerHealthStr + std::to_string(player1Health), Vector2f(20, 60));
+	if (currentPlayer == 1)
+	{
+		DrawTextOnScreen(playerAngleStr + std::to_string(playerAngle), Vector2f(20, 80));
+		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(20, 100));
+	}
+
+	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth-150, 20));
+	DrawTextOnScreen(playerNameStr + player2Name, Vector2f(m_ViewWidth - 150, 40));
+	DrawTextOnScreen(playerHealthStr + std::to_string(player2Health), Vector2f(m_ViewWidth - 150, 60));
+	if (currentPlayer == 2)
+	{
+		DrawTextOnScreen(playerAngleStr + std::to_string(playerAngle), Vector2f(m_ViewWidth - 150, 80));
+		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 150, 100));
+	}
+
 }
 
 void Graphics::DrawShape(Vertex array[],unsigned arraySize)
@@ -252,6 +296,14 @@ void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopol
 {
 	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
 	DrawShape(array,arraySize);
+}
+
+void Graphics::DrawTextOnScreen(std::string text, Vector2f position)
+{
+	const std::wstring s = StringConverter::StringToWide(text);
+	m_SpriteBatch->Begin();
+	m_SpriteFont->DrawString(m_SpriteBatch.get(),s.data(), DirectX::XMFLOAT2(position.GetX(), position.GetY()), DirectX::Colors::Black);
+	m_SpriteBatch->End();
 }
 
 void Graphics::DrawTank(int player)
