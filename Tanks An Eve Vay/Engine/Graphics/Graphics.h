@@ -11,6 +11,7 @@
 
 //#define DEBUG
 #define MAP_SIZE_250 (400000)
+class Vector2f;
 
 class Graphics
 {
@@ -19,6 +20,8 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	void DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize);
+
+	void DrawTextOnScreen(std::string text, Vector2f position);
 
 private:
 
@@ -33,7 +36,10 @@ private:
 
 	void UpdateMapState();
 
-	void DrawString();
+	void DrawStats();
+
+	int m_ViewWidth;
+	int m_ViewHeight;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
@@ -47,6 +53,6 @@ private:
 	std::vector<Vertex> m_Data;
 	unsigned m_DataSize = 0;
 
-	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
-	std::unique_ptr<DirectX::SpriteFont> spriteFont;
+	std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> m_SpriteFont;
 };

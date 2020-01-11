@@ -25,8 +25,8 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 		return false;
 	}
 
-	spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
-	spriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
+	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
+	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
 
 	m_Data = std::vector<Vertex>(60000);
 	GameManager::Initialize();
@@ -57,7 +57,7 @@ void Graphics::RenderFrame()
 			GameManager::UpdateTerrainOutline();
 		}
 	}
-	DrawString();
+	DrawStats();
 	//END DRAW REGION
 
 	m_SwapChain->Present(1, NULL);
@@ -132,6 +132,9 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 
 	m_DeviceContext->RSSetViewports(1, &viewport);
 
+	m_ViewHeight = height;
+	m_ViewWidth = width;
+
 	return true;
 }
 
@@ -195,11 +198,29 @@ void Graphics::UpdateMapState()
 	m_DataSize = vectorSize;
 }
 
-void Graphics::DrawString()
+void Graphics::DrawStats()
 {
-	spriteBatch->Begin();
-	spriteFont->DrawString(spriteBatch.get(), L"Hello, world!", DirectX::XMFLOAT2(500,200),DirectX::Colors::Black);
-	spriteBatch->End();
+	std::string player1Name = "Pera";
+	std::string player2Name = "Mika";
+	int player1Health = 100;
+	int player2Health = 100;
+	int player1Angle = 0;
+	int player2Angle = 0;
+	std::string playerBar = "Player: ";
+	std::string playerName = "Name : ";
+	std::string playerHealth = "Health: ";
+	std::string playerAngle = "Angle: ";
+
+	DrawTextOnScreen(playerBar, Vector2f(20, 20));
+	DrawTextOnScreen(playerName + player1Name, Vector2f(20, 40));
+	DrawTextOnScreen(playerHealth + std::to_string(player1Health), Vector2f(20, 60));
+	DrawTextOnScreen(playerAngle + std::to_string(player1Angle), Vector2f(20, 80));
+
+	DrawTextOnScreen(playerBar, Vector2f(m_ViewWidth-150, 20));
+	DrawTextOnScreen(playerName + player2Name, Vector2f(m_ViewWidth - 150, 40));
+	DrawTextOnScreen(playerHealth + std::to_string(player2Health), Vector2f(m_ViewWidth - 150, 60));
+	DrawTextOnScreen(playerAngle + std::to_string(player2Angle), Vector2f(m_ViewWidth - 150, 80));
+
 }
 
 void Graphics::DrawShape(Vertex array[],unsigned arraySize)
@@ -264,6 +285,14 @@ void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopol
 {
 	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
 	DrawShape(array,arraySize);
+}
+
+void Graphics::DrawTextOnScreen(std::string text, Vector2f position)
+{
+	const std::wstring s = StringConverter::StringToWide(text);
+	m_SpriteBatch->Begin();
+	m_SpriteFont->DrawString(m_SpriteBatch.get(),s.data(), DirectX::XMFLOAT2(position.GetX(), position.GetY()), DirectX::Colors::Black);
+	m_SpriteBatch->End();
 }
 
 void Graphics::DrawTank(int player)
