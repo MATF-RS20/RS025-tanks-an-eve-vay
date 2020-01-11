@@ -14,12 +14,12 @@ private:
 	Tank *m_playerTank;
 	double m_health = 1.0; // in range [0.0, 1.0]
 
-	double m_firePower = 1; // in range [0.0, 1.0]
+	double m_firePower = 0.8; // in range [0.0, 1.0]
 	double m_angle = 0;
 
 	std::string m_playerName;
 	int m_uniqueID;
-	bool m_canFire;
+	bool m_canFire = false;
 
 public:
 	Player();
@@ -35,12 +35,14 @@ public:
 	Tank &getPlayerTank();
 	const int getID();
 	Vector2f GetTankPosition();
+	bool getCanFire();
 
 
 	// Setters
 	void setHealth(double hp);
 	void setFirePower(double power);
 	void setAngle(double angle);
+	void setCanFire(bool x);
 
 
 	void rotateTurret(double forAngle);

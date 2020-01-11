@@ -75,6 +75,7 @@ void GameManager::MovePlayer(Vector2f dv)
 
 void GameManager::Initialize()
 {
+	m_Player1->setCanFire(true);
 	m_Map->FillTerrain(TerrainType::Hill);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
@@ -151,11 +152,21 @@ void GameManager::Fire()
 {
 	if (m_CurrentPlayer == 1)
 	{
-		m_Projectile = m_Player1->fireInTheHole();
+		if (m_Player1->getCanFire())
+		{
+			m_Player1->setCanFire(false);
+			m_Player2->setCanFire(true);
+			m_Projectile = m_Player1->fireInTheHole();
+		}
 	}
 	else
-	{ 
-		m_Projectile = m_Player2->fireInTheHole();
+	{
+		if (m_Player2->getCanFire())
+		{
+			m_Player2->setCanFire(false);
+			m_Player1->setCanFire(true);
+			m_Projectile = m_Player2->fireInTheHole();
+		}
 	}
 }
 
