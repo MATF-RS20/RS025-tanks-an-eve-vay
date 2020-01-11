@@ -6,13 +6,11 @@
 #include "Vector2f.h"
 #include "Weapon.h"
 
-
-
 class Player
 {
 private:
 	Tank *m_playerTank;
-	double m_health = 1.0; // in range [0.0, 1.0]
+	int m_health = 99; // in range [0.0, 1.0]
 
 	double m_firePower = 0.8; // in range [0.0, 1.0]
 	double m_angle = 0;
@@ -28,7 +26,7 @@ public:
 	~Player();
 
 	// Getters
-	double getHealth();
+	int getHealth();
 	double getFirePower();
 	double getAngle();
 	std::string getPlayerName();
@@ -39,7 +37,7 @@ public:
 
 
 	// Setters
-	void setHealth(double hp);
+	void setHealth(int hp);
 	void setFirePower(double power);
 	void setAngle(double angle);
 	void setCanFire(bool x);

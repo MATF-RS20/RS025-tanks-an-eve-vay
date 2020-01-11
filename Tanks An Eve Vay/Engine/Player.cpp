@@ -26,7 +26,7 @@ Player::~Player()
 }
 
 
-double Player::getHealth() { return m_health; }
+int Player::getHealth() { return m_health; }
 double Player::getFirePower() { return m_firePower; }
 double Player::getAngle() { return m_angle; }
 std::string Player::getPlayerName() { return m_playerName; }
@@ -39,7 +39,7 @@ bool Player::getCanFire()
 	return m_canFire;
 }
 
-void Player::setHealth(double hp) { m_health = hp; }
+void Player::setHealth(int hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
 void Player::setAngle(double angle) { m_angle = angle; }
 
