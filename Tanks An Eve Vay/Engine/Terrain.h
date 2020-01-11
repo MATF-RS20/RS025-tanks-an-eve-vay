@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Vector2f.h"
 #include <vector>
+#include <map>
 
 enum TerrainType
 {
@@ -21,19 +22,19 @@ public:
 	unsigned GetN() const;
 	unsigned GetM() const;
 	bool GetElement(unsigned i, unsigned j);
-	//bool DetectCoalision(const Object* object);
 
 	void FillTerrain(TerrainType type);
-	void PrintTerrain();
-	bool DestroyTerrain(const Object* object);
+
+	void DestroyTerrain(unsigned bottomLeftX,unsigned bottomLeftY,unsigned topRightX,unsigned topRightY);
 
 	~Terrain();
 protected:
-	std::vector<Vector2f> FindAllAffectedGridCell(const Object *object);
+	void UpdateTerrainState(unsigned bottomLeftX, unsigned bottomLeftY, unsigned topRightX);
 private:
+	std::vector<std::vector<bool>> m_TerrainMatrix;
+
 	unsigned m_N;
 	unsigned m_M;
-	std::vector<std::vector<bool>> m_TerrainMatrix;
 
 	Terrain(const Terrain& m) = delete;
 	Terrain& operator=(const Terrain& p) = delete;

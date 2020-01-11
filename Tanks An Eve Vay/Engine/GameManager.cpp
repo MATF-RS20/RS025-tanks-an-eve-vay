@@ -1,13 +1,24 @@
 #include "GameManager.h"
+#include "Player.h"
 #include "Tank.h"
+#include "Terrain.h"
 #include "Weapon.h"
+
+#define Coords(x) ((m_MapSizeN*(x))/2.0f+(m_MapSizeN/2.0f))
+
+void GameManager::Initialize()
+{
+	m_Map->FillTerrain(TerrainType::Hill);
+	m_MapSizeN = m_Map->GetN();
+	m_MapSizeM = m_Map->GetM();
+	UpdateTerrainOutline();
+}
 
 bool GameManager::GetGridValue(int i, int j) {
 	if (i >= m_MapSizeN || j >= m_MapSizeM || i < 0 || j < 0)
 	{
 		ErrorLogger::Log("Grid selected index out of range!!!!");
 		return false;
-
 	}
 	return m_Map->GetElement(i, j);
 }
@@ -35,6 +46,50 @@ bool GameManager::Projectile()
 	}
 
 	return m_Projectile != nullptr;
+}
+
+bool GameManager::CheckCollision()
+{
+	Vector2f objectPostion = m_Projectile->GetPosition();
+	Vector2f objectSize = m_Projectile->GetSize();
+	Vector2f BlastRadious = Vector2f(5, 5); //TODO Link to Projectile Blast Radious
+	double a = (Coords(objectPostion.GetX() - objectSize.GetX() / 2));
+	double b = (Coords(objectPostion.GetY() - objectSize.GetY() / 2));
+	double c = (Coords(objectPostion.GetX() + objectSize.GetX() / 2));
+	double d = (Coords(objectPostion.GetY() + objectSize.GetY() / 2));
+	if (a < 0 || b < 0 || c < 0 || d < 0 )
+	{
+		return false;
+	}
+	if (a < m_MapSizeN && c < m_MapSizeN)
+	{
+		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
+		{
+			if (a > BlastRadious.GetX())
+			{
+				a -= BlastRadious.GetX();
+			}
+			if (b > BlastRadious.GetY())
+			{
+				b -= BlastRadious.GetY();
+			}
+			if (c < m_MapSizeN -BlastRadious.GetX())
+			{
+				c += BlastRadious.GetX();
+			}
+			if (d > m_MapSizeM - BlastRadious.GetY())
+			{
+				d += BlastRadious.GetY();
+			}
+
+			m_Map->DestroyTerrain(a, b, c, d);
+			delete m_Projectile;
+			m_Projectile = nullptr;
+			GameManager::ChangePlayer();
+			return true;
+		}
+	}
+	return false;
 }
 
 Vector2f GameManager::GetPlayerPosition(int player)
@@ -73,13 +128,6 @@ void GameManager::MovePlayer(Vector2f dv)
 	}
 }
 
-void GameManager::Initialize()
-{
-	m_Map->FillTerrain(TerrainType::Hill);
-	m_MapSizeN = m_Map->GetN();
-	m_MapSizeM = m_Map->GetM();
-}
-
 float GameManager::ScaleRatioX()
 {
 	return 2.f / m_MapSizeN;
@@ -91,7 +139,6 @@ float GameManager::ScaleRatioY()
 }
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
-	//TODO mouse coord system need to be transfered to game coord system
 	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
 	double yScale = 1.f - mousePosition.GetY() / 300.0f;
 
@@ -172,14 +219,38 @@ int GameManager::GetCurrentPlayer()
 	return m_CurrentPlayer;
 }
 
+
+void GameManager::UpdateTerrainOutline()
+{
+	for (unsigned i = 0u; i < m_MapSizeN; i++)
+	{
+		for (unsigned j = 0u; j < m_MapSizeM; j++)
+		{
+			if (!m_Map->GetElement(i, j))
+			{
+				if (j == 0)
+				{
+					break;
+				}
+				(*m_Outline)[i] = j - 1;
+				break;
+			}
+		}
+	}
+}
+
+
+
 //Initializing of static class member
 int GameManager::m_CurrentPlayer = 1;
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
 
-Terrain* GameManager::m_Map = new Terrain(250);
+Terrain* GameManager::m_Map = new Terrain(200);
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
 
 Weapon * GameManager::m_Projectile = nullptr;
+
+std::map<unsigned, unsigned>* GameManager::m_Outline = new std::map<unsigned, unsigned>();
 

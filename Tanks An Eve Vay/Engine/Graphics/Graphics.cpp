@@ -24,8 +24,11 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 		return false;
 	}
 
+	m_Data = std::vector<Vertex>(60000);
 	GameManager::Initialize();
 	UpdateMapState();
+
+
 
 	return true;
 }
@@ -44,8 +47,12 @@ void Graphics::RenderFrame()
 	if (GameManager::Projectile())
 	{
 		DrawProjectile();
+		if (GameManager::CheckCollision())
+		{
+			UpdateMapState();
+			GameManager::UpdateTerrainOutline();
+		}
 	}
-
 	//END DRAW REGION
 
 	m_SwapChain->Present(1, NULL);
@@ -148,7 +155,6 @@ bool Graphics::InitializeShaders()
 
 void Graphics::UpdateMapState()
 {
-	m_Data = std::vector<Vertex>(400000);
 	const unsigned n = GameManager::GetMapN();
 	const unsigned m = GameManager::GetMapM();
 	float scaleRatioX = SCALE_RATIO_X;
@@ -228,16 +234,16 @@ void Graphics::DrawMouseIndicator()
 	Vertex line []
 	{
 		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.1*std::cos(angle) + playerPosition.GetX(),0.1*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.15*std::cos(angle) + playerPosition.GetX(),0.15*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.20*std::cos(angle) + playerPosition.GetX(),0.20*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.25*std::cos(angle) + playerPosition.GetX(),0.25*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.30*std::cos(angle) + playerPosition.GetX(),0.30*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.35*std::cos(angle) + playerPosition.GetX(),0.35*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.40*std::cos(angle) + playerPosition.GetX(),0.40*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.45*std::cos(angle) + playerPosition.GetX(),0.45*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.50*std::cos(angle) + playerPosition.GetX(),0.50*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerPosition.GetY(), 1.0, 0.0, 0.0)
+		Vertex(0.1*std::cos(angle) + playerPosition.GetX(),0.1*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.15*std::cos(angle) + playerPosition.GetX(),0.15*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.20*std::cos(angle) + playerPosition.GetX(),0.20*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.25*std::cos(angle) + playerPosition.GetX(),0.25*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.30*std::cos(angle) + playerPosition.GetX(),0.30*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.35*std::cos(angle) + playerPosition.GetX(),0.35*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.40*std::cos(angle) + playerPosition.GetX(),0.40*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.45*std::cos(angle) + playerPosition.GetX(),0.45*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.50*std::cos(angle) + playerPosition.GetX(),0.50*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+		Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0)
 	};
 	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_POINTLIST, ARRAYSIZE(line));
 }
@@ -305,15 +311,6 @@ void Graphics::DrawTank(int player)
 		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
 		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
 		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
-
-		/*Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle)),
-		Vertex(Rotx(-0.1,0.1,angle),Roty(-0.1,0.1,angle)),
-		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
-
-		Vertex(Rotx(0.1,0.1,angle),Roty(0.1,0.1,angle)),
-		Vertex(Rotx(0.1,0.0,angle),Roty(0.1,0.0,angle)),
-		Vertex(Rotx(-0.1,0.0,angle),Roty(-0.1,0.0,angle))*/
-
 	};
 
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
@@ -356,25 +353,6 @@ void Graphics::DrawMap()
 		m_DeviceContext->Draw(3, i);
 	}
 	m_VertexBuffer->Release();
-}
-
-void Graphics::DrawGridPart(int i,int j)
-{
-	i -= GameManager::GetMapN()/2;
-	j -= GameManager::GetMapM()/2;
-	float scaleRatioX = SCALE_RATIO_X;
-	float scaleRatioY = SCALE_RATIO_Y;
-	Vertex gridPart[] =
-	{
-		Vertex(i*scaleRatioX, j*scaleRatioY,0,0,1),
-		Vertex(i*scaleRatioX,(j + 1)*scaleRatioY,0,0,1),
-		Vertex((i + 1) * scaleRatioX, (j + 1) *scaleRatioY,0,0,1),
-
-		Vertex(i*scaleRatioX, j*scaleRatioY,0,0,1),
-		Vertex((i + 1) * scaleRatioX, (j + 1) *scaleRatioY,0,0,1),
-		Vertex((i+1)*scaleRatioX, j*scaleRatioY,0,0,1),
-	};
-	DrawShape(gridPart, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST,ARRAYSIZE(gridPart));
 }
 
 void Graphics::DrawProjectile()
@@ -428,5 +406,3 @@ void Graphics::DrawProjectile()
 
 	m_VertexBuffer->Release();
 }
-
-

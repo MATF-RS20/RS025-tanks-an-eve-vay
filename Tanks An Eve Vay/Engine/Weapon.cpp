@@ -8,10 +8,11 @@ Weapon::Weapon(Vector2f position, Vector2f size, double playerAngle, double play
 
 Vector2f Weapon::fly()
 {
-	m_time += 0.01;
+	m_time += 0.005;
 	
 	double x = m_velocity * cos(m_radians) * m_time;
 	double y = (m_velocity * sin(m_radians) * m_time) - GRAVITY*m_time*m_time*0.5;
+	Vector2f v = (*this).GetPosition();
 	(*this).Move(Vector2f(x, y));
 
 	return (*this).GetPosition();
