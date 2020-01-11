@@ -180,6 +180,23 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 #endif
 }
 
+double GameManager::GetPlayerPower()
+{
+	if (m_CurrentPlayer == 1)
+		return m_Player1->getFirePower();
+	else
+		return m_Player2->getFirePower();
+}
+
+std::string GameManager::GetPlayerName(int num)
+{
+	if (num == 1)
+		return m_Player1->getPlayerName();
+	else if (num == 2)
+		return m_Player2->getPlayerName();
+	else return 0;
+}
+
 double GameManager::GetPlayerAngle()
 {
 	if (m_CurrentPlayer == 1)

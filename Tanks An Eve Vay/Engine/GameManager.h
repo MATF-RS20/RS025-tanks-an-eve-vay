@@ -24,6 +24,8 @@ public:
 	static float ScaleRatioY();
 
 	static void RotateTurret(Vector2f mousePosition);
+	double GetPlayerPower();
+	std::string GetPlayerName(int num);
 	static double GetPlayerAngle();
 
 	static int GetMapN();
