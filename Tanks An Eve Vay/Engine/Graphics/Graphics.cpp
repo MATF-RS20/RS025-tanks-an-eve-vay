@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include <vector>
 #include "..\\GameManager.h"
+#include <DirectXMath.h>
 
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
@@ -23,6 +24,9 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	{
 		return false;
 	}
+
+	spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
+	spriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
 
 	m_Data = std::vector<Vertex>(60000);
 	GameManager::Initialize();
@@ -53,6 +57,7 @@ void Graphics::RenderFrame()
 			GameManager::UpdateTerrainOutline();
 		}
 	}
+	DrawString();
 	//END DRAW REGION
 
 	m_SwapChain->Present(1, NULL);
@@ -188,6 +193,13 @@ void Graphics::UpdateMapState()
 		}
 	}
 	m_DataSize = vectorSize;
+}
+
+void Graphics::DrawString()
+{
+	spriteBatch->Begin();
+	spriteFont->DrawString(spriteBatch.get(), L"Hello, world!", DirectX::XMFLOAT2(500,200),DirectX::Colors::Black);
+	spriteBatch->End();
 }
 
 void Graphics::DrawShape(Vertex array[],unsigned arraySize)

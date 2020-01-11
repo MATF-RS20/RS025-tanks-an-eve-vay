@@ -2,13 +2,14 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include "Shaders.h"
+#include <SpriteFont.h>
 #include <vector>
 #include "Vertex.h"
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"DirectXTK.lib")
 
-#define DEBUG
+//#define DEBUG
 #define MAP_SIZE_250 (400000)
 
 class Graphics
@@ -32,6 +33,8 @@ private:
 
 	void UpdateMapState();
 
+	void DrawString();
+
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
@@ -43,4 +46,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_VertexBuffer;
 	std::vector<Vertex> m_Data;
 	unsigned m_DataSize = 0;
+
+	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> spriteFont;
 };
