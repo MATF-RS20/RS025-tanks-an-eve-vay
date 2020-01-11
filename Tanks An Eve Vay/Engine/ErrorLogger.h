@@ -1,8 +1,9 @@
 #pragma once
 
-#include "StringConverter.h"
-#include <Windows.h>
 #include <comdef.h>
+#include <Windows.h>
+
+#include "StringConverter.h"
 
 class ErrorLogger
 {

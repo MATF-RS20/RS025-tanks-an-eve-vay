@@ -9,6 +9,7 @@
 #pragma comment(lib,"DirectXTK.lib")
 
 #define DEBUG
+#define MAP_SIZE_250 (400000)
 
 class Graphics
 {
@@ -25,7 +26,6 @@ private:
 	
 	void DrawTank(int player);
 	void DrawMap();
-	void DrawGridPart(int i,int j);
 	void DrawProjectile();
 	void DrawShape(Vertex array[], unsigned arraySize);
 	void DrawMouseIndicator();

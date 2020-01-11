@@ -1,6 +1,7 @@
 #include "Object.h"
 #include "Terrain.h"
 
+#define Coords(x) ((m_N*(x))/2.0f+(m_N/2.0f))
 
 Terrain::Terrain(unsigned n, unsigned m)
 	:m_N(n), m_M(m)
@@ -28,43 +29,35 @@ bool Terrain::GetElement(unsigned i, unsigned j)
 	return m_TerrainMatrix[i][j];
 }
 
-void Terrain::PrintTerrain()
+void Terrain::DestroyTerrain(unsigned bottomLeftX, unsigned bottomLeftY, unsigned topRightX, unsigned topRightY)
 {
-	for (unsigned i = 0; i < m_N; i++)
+	for (unsigned i = bottomLeftX; i <= topRightX; i++)
 	{
-		for (unsigned j = 0; j < m_M; j++)
+		for (unsigned j = bottomLeftY;j <= topRightY; j++)
+		{
+			m_TerrainMatrix[i][j] = false;
+		}
+	}
+	UpdateTerrainState(bottomLeftX,bottomLeftY,topRightX);
+}
+
+void Terrain::UpdateTerrainState(unsigned bottomLeftX,unsigned bottomLeftY, unsigned topRightX)
+{
+	for (unsigned i = bottomLeftX; i <= topRightX; i++)
+	{
+		unsigned nextAviable = bottomLeftY;
+		for (unsigned j = m_M-1; j > nextAviable; j--)
 		{
 			if (m_TerrainMatrix[i][j])
 			{
-				std::cout << m_TerrainMatrix[i][j]<< std::endl;
+				m_TerrainMatrix[i][nextAviable++] = true;
+				m_TerrainMatrix[i][j] = false;
 			}
 		}
 	}
 }
 
-Terrain::~Terrain()
-{
-}
-
-std::vector<Vector2f> Terrain::FindAllAffectedGridCell(const Object * object)
-{
-	return std::vector<Vector2f>();
-}
-bool Terrain::DestroyTerrain(const Object * object)
-{
-	bool hasAffectTerrain = false;
-	std::vector<Vector2f> affectedGridCell = FindAllAffectedGridCell(object);
-	auto it = affectedGridCell.cbegin();
-	while (it != affectedGridCell.cend())
-	{
-		unsigned i = it->GetX();
-		unsigned j = it->GetY();
-		m_TerrainMatrix[i][j] = false;
-		hasAffectTerrain = true;
-	}
-	return hasAffectTerrain;
-}
-
+//TODO map reading from document (better option!)
 void Terrain::FillTerrain(TerrainType type)
 {
 	switch (type)
@@ -110,4 +103,8 @@ void Terrain::FillTerrain(TerrainType type)
 	default:
 		break;
 	}
+}
+
+Terrain::~Terrain()
+{
 }

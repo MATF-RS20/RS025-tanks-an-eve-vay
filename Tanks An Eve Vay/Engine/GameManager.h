@@ -4,9 +4,10 @@
 
 #include "ErrorLogger.h"
 #include "Vector2f.h"
-#include "Player.h"
-#include "Terrain.h"
+#include <map>
 
+class Player;
+class Terrain;
 class Weapon;
 
 class GameManager
@@ -19,7 +20,6 @@ public:
 	static Vector2f GetPlayerPosition(int player);
 	static Vector2f GetPlayerSize(int player);
 
-	
 	static float ScaleRatioX();
 	static float ScaleRatioY();
 
@@ -41,6 +41,9 @@ public:
 	static Vector2f GetProjectileSize();
 	static bool Projectile();
 
+	static bool CheckCollision();
+	static void UpdateTerrainOutline();
+
 private:
 	static Terrain* m_Map;
 	static int m_MapSizeN;
@@ -53,5 +56,6 @@ private:
 
 	static Weapon* m_Projectile;
 
+	static std::map<unsigned, unsigned>* m_Outline;
 };
 

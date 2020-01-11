@@ -63,7 +63,7 @@ bool RenderWindow::ProcessMessages()
 	{
 		if (!IsWindow(m_Handle))
 		{
-			m_Handle = NULL;
+			m_Handle = nullptr;
 			UnregisterClass(m_WindowClassWide.c_str(), m_HInstance);
 			return false;
 		}
