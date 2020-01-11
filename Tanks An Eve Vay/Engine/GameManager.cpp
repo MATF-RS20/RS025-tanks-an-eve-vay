@@ -236,6 +236,18 @@ double GameManager::GetPlayerAngle()
 		return m_Player2->getAngle();
 }
 
+int GameManager::GetPlayerHealth(int player)
+{
+	if (m_CurrentPlayer == 1)
+	{
+		return m_Player1->getHealth();
+	}
+	else
+	{
+		return m_Player2->getHealth();
+	}
+}
+
 int GameManager::GetMapN()
 {
 	return m_MapSizeN;

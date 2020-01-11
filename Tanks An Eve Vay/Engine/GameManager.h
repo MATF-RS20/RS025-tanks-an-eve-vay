@@ -27,7 +27,7 @@ public:
 	static double GetPlayerPower();
 	static std::string GetPlayerName(int num);
 	static double GetPlayerAngle();
-
+	static int GetPlayerHealth(int player);
 	static int GetMapN();
 	static int GetMapM();
 

@@ -203,8 +203,8 @@ void Graphics::DrawStats()
 {
 	std::string player1Name = GameManager::GetPlayerName(1);
 	std::string player2Name = GameManager::GetPlayerName(1);
-	int player1Health = 100;
-	int player2Health = 100;
+	int player1Health = GameManager::GetPlayerHealth(1);
+	int player2Health = GameManager::GetPlayerHealth(2);
 	int currentPlayer = GameManager::GetCurrentPlayer();
 	double playerAngle = GameManager::GetPlayerAngle() * 180 / PI;
 	double playerPower = GameManager::GetPlayerPower();
