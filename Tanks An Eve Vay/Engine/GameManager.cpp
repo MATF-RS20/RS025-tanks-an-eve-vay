@@ -63,13 +63,16 @@ Vector2f GameManager::GetPlayerSize(int player)
 
 void GameManager::MovePlayer(Vector2f dv)
 {
+
 	if (m_CurrentPlayer == 1)
 	{
-		m_Player1->moveMyTank(dv);
+		if(m_Player1->getCanFire())
+			m_Player1->moveMyTank(dv);
 	}
 	else if (m_CurrentPlayer == 2)
 	{
-		m_Player2->moveMyTank(dv);
+		if (m_Player2->getCanFire())
+			m_Player2->moveMyTank(dv);
 	}
 }
 
