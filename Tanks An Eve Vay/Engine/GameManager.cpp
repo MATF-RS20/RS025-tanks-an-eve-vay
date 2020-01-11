@@ -13,6 +13,7 @@ void GameManager::Initialize()
 	m_Map->FillTerrain(TerrainType::Hill);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
+	m_Outline = new std::vector<unsigned>(m_MapSizeN);
 	UpdateTerrainOutline();
 }
 
@@ -65,6 +66,7 @@ bool GameManager::CheckCollision()
 	}
 	if (a < m_MapSizeN && c < m_MapSizeN)
 	{
+
 		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
 		{
 			if (a > BlastRadious.GetX())
@@ -326,5 +328,5 @@ int GameManager::m_MapSizeM = 0;
 
 Weapon * GameManager::m_Projectile = nullptr;
 
-std::map<unsigned, unsigned>* GameManager::m_Outline = new std::map<unsigned, unsigned>();
+std::vector<unsigned>* GameManager::m_Outline = nullptr;
 

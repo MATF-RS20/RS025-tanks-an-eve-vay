@@ -58,6 +58,6 @@ private:
 
 	static Weapon* m_Projectile;
 
-	static std::map<unsigned, unsigned>* m_Outline;
+	static std::vector<unsigned>* m_Outline;
 };
 
