@@ -201,13 +201,13 @@ void Graphics::UpdateMapState()
 
 void Graphics::DrawStats()
 {
-	std::string player1Name = "Pera";
-	std::string player2Name = "Mika";
+	std::string player1Name = GameManager::GetPlayerName(1);
+	std::string player2Name = GameManager::GetPlayerName(1);
 	int player1Health = 100;
 	int player2Health = 100;
 	int currentPlayer = GameManager::GetCurrentPlayer();
 	double playerAngle = GameManager::GetPlayerAngle() * 180 / PI;
-	double playerPower = 0;
+	double playerPower = GameManager::GetPlayerPower();
 	std::string playerBarStr = "Player: ";
 	std::string playerNameStr = "Name : ";
 	std::string playerHealthStr = "Health: ";
