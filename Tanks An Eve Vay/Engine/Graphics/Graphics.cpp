@@ -317,8 +317,21 @@ void Graphics::DrawTank(int player)
 	float scaley = 0.1 / 0.5f;
 
 	Vector2f playerPosition = GameManager::MovePlayer(player);
+	Vector2f playerSize = GameManager::GetPlayerSize(player);
 	float playerX = static_cast<float>(playerPosition.GetX());
 	float playerY = static_cast<float>(playerPosition.GetY());
+
+	float playerW = static_cast<float>(playerSize.GetX());
+	float playerH = static_cast<float>(playerSize.GetY());
+
+	Vertex beta[]
+	{
+		Vertex(playerX-playerW/2 , playerY),
+		Vertex(playerX+playerW/2, playerY),
+		Vertex(playerX+playerW/2, playerY+playerH),
+		Vertex(playerX-playerW/2, playerY + playerH),
+		Vertex(playerX-playerW/2 , playerY)
+	};
 
 	Vertex base[]
 	{
@@ -369,7 +382,8 @@ void Graphics::DrawTank(int player)
 		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
 		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
 	};
-
+	
+	DrawShape(beta, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP, ARRAYSIZE(beta));
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
 	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
