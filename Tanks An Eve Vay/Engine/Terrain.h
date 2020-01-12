@@ -27,7 +27,7 @@ public:
 	void FillTerrain(TerrainType type);
 
 	void DestroyTerrain(unsigned bottomLeftX,unsigned bottomLeftY,unsigned topRightX,unsigned topRightY);
-	Vector2f FindNextMove(Tank& playerTank, int move);
+	Vector2f FindNextMove(Tank& playerTank, int move,std::vector<unsigned>* outline);
 	~Terrain();
 protected:
 	void UpdateTerrainState(unsigned bottomLeftX, unsigned bottomLeftY, unsigned topRightX);

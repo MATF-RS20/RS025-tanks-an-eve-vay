@@ -141,12 +141,12 @@ Vector2f GameManager::MovePlayer(int player)
 			{
 				if (m_nextMove == LEFT)
 				{
-					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), -1); //Mocked tank size
+					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), -1,m_Outline); //Mocked tank size
 					m_Player1->moveMyTank(Vector2f(-0.005,0));
 				}
 				else if (m_nextMove == RIGHT)
 				{
-					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), 1); //Mocked tank size
+					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), 1,m_Outline); //Mocked tank size
 					m_Player1->moveMyTank(dv);
 				}
 

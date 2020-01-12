@@ -46,7 +46,56 @@ void Terrain::DestroyTerrain(unsigned bottomLeftX, unsigned bottomLeftY, unsigne
 	}
 	UpdateTerrainState(bottomLeftX,bottomLeftY,topRightX);
 }
+Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned>* outline)
+{
+	if (move != 1 && move != -1)
+	{
+		return Vector2f(0, 0);
+	}
 
+	double gridCells = std::ceil(Coords(MoveLength));
+	if (gridCells <= 0)
+	{
+		ErrorLogger::Log("gredCells < 0");
+		return Vector2f(0, 0);
+	}
+
+	//double a, b;
+	Vector2f tankPosition = playerTank.GetPosition();
+	Vector2f tankSize = playerTank.GetSize();
+	
+	if (move == 1)
+	{
+		double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2))) + 1;
+		double y = (Coords(tankPosition.GetY()))-1;
+		double rightX = std::ceil(Coords(tankPosition.GetX() + tankSize.GetX() / 6)) - 1;
+
+		unsigned mapY = outline->at(rightX + 1);
+		int dy = mapY - y;
+
+		if (dy == 0)
+		{
+			return Vector2f(0.01, 0);
+		}
+		if (dy == 1)
+		{
+			return Vector2f(0.01, 0.01);
+		}
+		if (dy > 1)
+		{
+			return Vector2f();
+		}
+
+		if (dy < 1)
+		{
+			return Vector2f(0.01, -0.01);
+		}
+
+	}
+
+	return Vector2f();
+}
+/*
 Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 {
 	if (move != 1 && move != -1)
@@ -89,13 +138,13 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 		else
 		{
 			return Vector2f(-0.005, 0);
-		}*/
+		}
 
 		bool canGoUp = true;
 		Vector2f firstInSeq(fromIndex,b+1);
 		Vector2f lastInSeq(fromIndex,b+1);
 		int lastHeight = 1;
-		for(unsigned i = fromIndex;i<=gridCells+5;i++)
+		for(unsigned i = fromIndex;i<=fromIndex + gridCells;i++)
 		{
 			int currentHeight = 0;
 			for (unsigned j = b; j < m_M; j++)
@@ -109,18 +158,21 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 					break;
 				}
 			}
-			if (currentHeight - 1 <= lastHeight)
+			if (currentHeight - 1 > lastHeight)
+			{
+				canGoUp = false;
+			}
+			else
 			{
 				lastHeight = currentHeight;
-				canGoUp = false;
 			}
 			if (i == gridCells - 1)
 			{
-				lastInSeq = Vector2f(i, lastHeight);
+				lastInSeq = Vector2f(i, b +currentHeight);
 			}
 			if (i == fromIndex)
 			{
-				firstInSeq = Vector2f(i, currentHeight);
+				firstInSeq = Vector2f(i, b+ currentHeight);
 			}
 		}
 
@@ -135,6 +187,8 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 
 	return Vector2f();
 }
+*/
+
 
 
 void Terrain::UpdateTerrainState(unsigned bottomLeftX,unsigned bottomLeftY, unsigned topRightX)
@@ -231,7 +285,7 @@ void Terrain::FillTerrain(TerrainType type)
 		limit = m_N / 4;
 		for (unsigned i = limit; i < limit + 10;i++)
 		{
-			for (unsigned j = m_N/2+1; j < i + m_N/2-limit; j++)
+			for (unsigned j = m_N/2; j < i + m_N/2-limit; j++)
 			{
 				m_TerrainMatrix[i][j] = true;
 			}
