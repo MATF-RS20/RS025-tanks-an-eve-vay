@@ -1,8 +1,12 @@
 #include "Object.h"
 #include "Terrain.h"
+#include "ErrorLogger.h"
 
 #define Coords(x) ((m_N*(x))/2.0f+(m_N/2.0f))
 #define MoveLength (-1+ 0.005)
+#define CanCross (2)
+
+#define PI (atan(1.0f)*4.0f)
 
 Terrain::Terrain(unsigned n, unsigned m)
 	:m_N(n), m_M(m)
@@ -43,42 +47,95 @@ void Terrain::DestroyTerrain(unsigned bottomLeftX, unsigned bottomLeftY, unsigne
 	UpdateTerrainState(bottomLeftX,bottomLeftY,topRightX);
 }
 
-Vector2f Terrain::FindNextMove(const Vector2f position,const Vector2f size, int move)
+Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 {
-	double gridCells = Coords(MoveLength);
-	double positionX = Coords(position.GetX());
-	double positionY = Coords(position.GetY());
-	double a = (Coords(position.GetX() - size.GetX() / 2));
-	double b = (Coords(position.GetY() + size.GetY() / 2));
-	gridCells = std::ceil(gridCells);
-
-	if (gridCells <= 0)
+	if (move != 1 && move != -1)
 	{
 		return Vector2f(0,0);
 	}
-	else if (move == 1)
+
+	double gridCells = std::ceil(Coords(MoveLength));
+	if (gridCells <= 0)
 	{
-		if (!m_TerrainMatrix[a + 1][b])
+		ErrorLogger::Log("gredCells < 0");
+		return Vector2f(0, 0);
+	}
+
+	double a, b;
+	Vector2f tankPosition = playerTank.GetPosition();
+	Vector2f tankSize = playerTank.GetSize();
+
+	if (move == 1)
+	{
+		a = (Coords(tankPosition.GetX() + tankSize.GetX() / 2));
+		b = (Coords(tankPosition.GetY())); // Angle?
+
+		bool canMoveForward = true;
+		unsigned fromIndex = -1;
+		for (unsigned i = a; i < a + gridCells+5; i++)
+		{
+			if (m_TerrainMatrix[i][b + 1])
+			{
+				canMoveForward = false;
+				fromIndex = i;
+				break;
+			}
+		}
+
+		if (canMoveForward)
 		{
 			return Vector2f(0.005, 0);
-		}
+		}/*
 		else
-		{
-			return Vector2f();
-		}
-	}
-	else if (move == -1)
-	{
-		if (!m_TerrainMatrix[a - 1][b])
 		{
 			return Vector2f(-0.005, 0);
-		}
-		else
+		}*/
+
+		bool canGoUp = true;
+		Vector2f firstInSeq(fromIndex,b+1);
+		Vector2f lastInSeq(fromIndex,b+1);
+		int lastHeight = 1;
+		for(unsigned i = fromIndex;i<=gridCells+5;i++)
 		{
-			return Vector2f();
+			int currentHeight = 0;
+			for (unsigned j = b; j < m_M; j++)
+			{
+				if (m_TerrainMatrix[i][j])
+				{
+					currentHeight++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (currentHeight - 1 <= lastHeight)
+			{
+				lastHeight = currentHeight;
+				canGoUp = false;
+			}
+			if (i == gridCells - 1)
+			{
+				lastInSeq = Vector2f(i, lastHeight);
+			}
+			if (i == fromIndex)
+			{
+				firstInSeq = Vector2f(i, currentHeight);
+			}
+		}
+
+		double angle = std::atan((lastInSeq.GetY() - firstInSeq.GetY()) / (lastInSeq.GetX() - firstInSeq.GetY()));
+		if (angle <= PI / 4) 
+		{
+			canGoUp = true;
+			return Vector2f(0.005, 0.005);
 		}
 	}
+	
+
+	return Vector2f();
 }
+
 
 void Terrain::UpdateTerrainState(unsigned bottomLeftX,unsigned bottomLeftY, unsigned topRightX)
 {
@@ -170,6 +227,17 @@ void Terrain::FillTerrain(TerrainType type)
 			m_TerrainMatrix[limit + 8][j] = true;
 			m_TerrainMatrix[limit + 9][j] = true;
 		}
+
+		limit = m_N / 4;
+		for (unsigned i = limit; i < limit + 10;i++)
+		{
+			for (unsigned j = m_N/2; j < i + m_N/2-limit; j++)
+			{
+				m_TerrainMatrix[i][j] = true;
+			}
+		}
+
+
 	}
 	default:
 		break;

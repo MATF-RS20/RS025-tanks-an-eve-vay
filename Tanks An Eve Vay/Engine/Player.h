@@ -37,6 +37,7 @@ public:
 	bool getCanFire();
 	int getMoves();
 
+	double getTankDrawAngle() const;
 
 	// Setters
 	void setHealth(int hp);
@@ -44,7 +45,7 @@ public:
 	void setAngle(double angle);
 	void setCanFire(bool x);
 	void setMoves(int mov);
-
+	void setTankDrawAngle(const double newAngle);
 
 	void rotateTurret(double forAngle);
 	void moveMyTank(Vector2f dv);

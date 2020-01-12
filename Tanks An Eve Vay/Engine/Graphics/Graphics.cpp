@@ -315,6 +315,9 @@ void Graphics::DrawTank(int player)
 {
 	float scalex = 0.1 / 1.4f;
 	float scaley = 0.1 / 0.5f;
+	double playerAngle =0;
+	double cosAngle = std::cos(playerAngle);
+	double sinAngle = std::sin(playerAngle);
 
 	Vector2f playerPosition = GameManager::MovePlayer(player);
 	float playerX = static_cast<float>(playerPosition.GetX());
@@ -322,24 +325,54 @@ void Graphics::DrawTank(int player)
 
 	Vertex base[]
 	{
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
+		//Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
+		//Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
+		//Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
 
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
+		//Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
+		//Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
+		//Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
+
+		Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle +playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+		Vertex(-0.7f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+
+		Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+		Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+
+		Vertex(0.2f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+
+		/*Vertex(-0.7f*scalex*cosAngle,0.2f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle ,0.2f*scaley*sinAngle ),
+
+		Vertex(-0.7f*scalex*cosAngle ,0.0f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle,0.2f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle,0.0f*scaley*sinAngle ),*/
+
+
 	};
 
 	Vertex top[]
 	{
+		Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		Vertex(-0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		
+		Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+
+
+		Vertex(0.0f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+
+		/*
 		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
 		Vertex(-0.5f*scalex + playerX,0.4f*scaley + playerY),
 		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
 
 		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
 		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY)
+		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY)*/
 	};
 
 #ifdef DEBUG
@@ -372,7 +405,7 @@ void Graphics::DrawTank(int player)
 
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
-	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
+	//DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
 	DrawMouseIndicator();
 }
 

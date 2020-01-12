@@ -44,6 +44,10 @@ int Player::getMoves()
 {
 	return m_movesLeft;
 }
+double Player::getTankDrawAngle() const
+{
+	return m_playerTank->getTankDrawAngle();
+}
 void Player::setHealth(int hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
 void Player::setAngle(double angle) { m_angle = angle; }
@@ -56,6 +60,11 @@ void Player::setCanFire(bool x)
 void Player::setMoves(int mov)
 {
 	m_movesLeft = mov;
+}
+
+void Player::setTankDrawAngle(const double newAngle)
+{
+	m_playerTank->setTankDrawAngle(newAngle);
 }
 
 bool Player::amIDead()
