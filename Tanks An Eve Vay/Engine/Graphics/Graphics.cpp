@@ -29,7 +29,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
 	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
 
-	m_Data = std::vector<Vertex>(60000);
+	m_Data = std::vector<Vertex>(1500000);
 	GameManager::Initialize();
 	UpdateMapState();
 
@@ -326,11 +326,11 @@ void Graphics::DrawTank(int player)
 
 	Vertex beta[]
 	{
-		Vertex(playerX-playerW/2 , playerY),
-		Vertex(playerX+playerW/2, playerY),
-		Vertex(playerX+playerW/2, playerY+playerH),
-		Vertex(playerX-playerW/2, playerY + playerH),
-		Vertex(playerX-playerW/2 , playerY)
+		Vertex(playerX-playerW/2 , playerY-0.01),
+		Vertex(playerX+playerW/2, playerY-0.01),
+		Vertex(playerX+playerW/2, playerY-0.01+playerH),
+		Vertex(playerX-playerW/2, playerY-0.01 + playerH),
+		Vertex(playerX-playerW/2 , playerY-0.01)
 	};
 
 	Vertex base[]

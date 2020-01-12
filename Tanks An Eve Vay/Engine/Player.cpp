@@ -44,6 +44,10 @@ int Player::getMoves()
 {
 	return m_movesLeft;
 }
+bool Player::getHitted()
+{
+	return m_hitted;
+}
 void Player::setHealth(int hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
 void Player::setAngle(double angle) { m_angle = angle; }
@@ -56,6 +60,11 @@ void Player::setCanFire(bool x)
 void Player::setMoves(int mov)
 {
 	m_movesLeft = mov;
+}
+
+void Player::setHitted(bool x)
+{
+	m_hitted = x;
 }
 
 bool Player::amIDead()

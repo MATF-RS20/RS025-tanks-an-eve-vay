@@ -10,7 +10,7 @@
 void GameManager::Initialize()
 {
   m_Player1->setCanFire(true);
-	m_Map->FillTerrain(TerrainType::Hill);
+	m_Map->FillTerrain(TerrainType::Flat);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
@@ -51,6 +51,34 @@ bool GameManager::Projectile()
 	return m_Projectile != nullptr;
 }
 
+
+bool GameManager::PlayerHitted(int p)
+{
+	if (p == 1)
+	{
+		return m_Player1->getHitted();
+	}
+
+	else if (p == 2)
+	{
+		return m_Player2->getHitted();
+	}
+}
+
+void GameManager::SetPlayerHitted(bool hit, int player)
+{
+	if (player == 1)
+	{
+		m_Player1->setHitted(hit);
+	}
+
+	else if (player == 2)
+	{
+		m_Player2->setHitted(hit);
+	}
+}
+
+
 bool GameManager::CheckCollision()
 {
 	Vector2f tankPosition;
@@ -72,7 +100,7 @@ bool GameManager::CheckCollision()
 	double tankWidth = tankSize.GetX();
 	double tankHeight = tankSize.GetY();
 	double tankX = tankPosition.GetX() - tankWidth/2;
-	double tankY = tankPosition.GetY();
+	double tankY = tankPosition.GetY() - 0.01;
 
 	
 	Vector2f objectPostion = m_Projectile->GetPosition();
@@ -83,10 +111,11 @@ bool GameManager::CheckCollision()
 	double c = (Coords(objectPostion.GetX() + objectSize.GetX() / 2));
 	double d = (Coords(objectPostion.GetY() + objectSize.GetY() / 2));
 
-	double aMaloX = objectPostion.GetX();
-	double aMaloY = objectPostion.GetY();
+	
 	double aMaloW = objectSize.GetX();
 	double aMaloH = objectSize.GetY();
+	double aMaloX = objectPostion.GetX() - aMaloW/2;
+	double aMaloY = objectPostion.GetY();
 
 
 	if (a < 0 || b < 0 || c < 0 || d < 0 )
@@ -95,21 +124,28 @@ bool GameManager::CheckCollision()
 	}
 	if (a < m_MapSizeN && c < m_MapSizeN)
 	{
-
+		// Tank collision with projectile
 		if ((tankX < aMaloX + aMaloW) && (aMaloX < tankX + tankWidth)
 			&& (tankY < aMaloY + aMaloH) && (aMaloY < tankY + tankHeight))
 		{
 			if (m_CurrentPlayer == 1)
 			{
-				m_Player2->setHealth(m_Player2->getHealth() - 10);
+				if (!(GameManager::PlayerHitted(2)))
+				{
+					m_Player2->setHealth(m_Player2->getHealth() - 10);
+					GameManager::SetPlayerHitted(true, 2);
+				}
 			}
 
 			else if (m_CurrentPlayer == 2)
 			{
-				m_Player1->setHealth(m_Player1->getHealth() - 10);
+				if (!(GameManager::PlayerHitted(1)))
+				{
+					m_Player1->setHealth(m_Player1->getHealth() - 10);
+					GameManager::SetPlayerHitted(true, 1);
+				}
 			}
-		}
-
+		} // END of tank collision
 
 		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
 		{
@@ -131,10 +167,49 @@ bool GameManager::CheckCollision()
 			}
 
 			
+			aMaloW = aMaloW + 0.05*2;
+			aMaloH = aMaloH + 0.3;
+			aMaloX = aMaloX - 0.05;
+			aMaloY = aMaloY - 0.1;
+
+
+			//TODO: weird things happen when using (NUMBER * 2 / m_mapSizeN) ??? cant implement AOE dmg using blast radious
+			if ((tankX < aMaloX + aMaloW) && (aMaloX < tankX + tankWidth)
+				&& (tankY < aMaloY + aMaloH) && (aMaloY < tankY + tankHeight))
+			{
+				if (m_CurrentPlayer == 1)
+				{
+					if (!(GameManager::PlayerHitted(2)))
+					{
+						m_Player2->setHealth(m_Player2->getHealth() - 3);
+						GameManager::SetPlayerHitted(true, 2);
+					}
+				}
+
+				else if (m_CurrentPlayer == 2)
+				{
+					if (!(GameManager::PlayerHitted(1)))
+					{
+						m_Player1->setHealth(m_Player1->getHealth() - 3);
+						GameManager::SetPlayerHitted(true, 1);
+					}
+				}
+			} // END of tank collision
+
 
 			m_Map->DestroyTerrain(a, b, c, d);
 			delete m_Projectile;
 			m_Projectile = nullptr;
+			if (m_CurrentPlayer == 1)
+			{
+				GameManager::SetPlayerHitted(false, 2);
+			}
+
+			else if (m_CurrentPlayer == 2)
+			{
+				GameManager::SetPlayerHitted(false, 1);
+			}
+			
 			GameManager::ChangePlayer();
 			return true;
 		}
