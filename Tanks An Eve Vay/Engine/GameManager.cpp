@@ -68,10 +68,11 @@ bool GameManager::CheckCollision()
 		tankSize = m_Player1->GetTankSize();
 	}
 
-	double tankX = tankPosition.GetX();
-	double tankY = tankPosition.GetY();
+	
 	double tankWidth = tankSize.GetX();
 	double tankHeight = tankSize.GetY();
+	double tankX = tankPosition.GetX() - tankWidth/2;
+	double tankY = tankPosition.GetY();
 
 	
 	Vector2f objectPostion = m_Projectile->GetPosition();
