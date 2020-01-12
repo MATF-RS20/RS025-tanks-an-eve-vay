@@ -26,7 +26,7 @@ public:
 	void FillTerrain(TerrainType type);
 
 	void DestroyTerrain(unsigned bottomLeftX,unsigned bottomLeftY,unsigned topRightX,unsigned topRightY);
-
+	Vector2f FindNextMove(const Vector2f position, const Vector2f size, int move);
 	~Terrain();
 protected:
 	void UpdateTerrainState(unsigned bottomLeftX, unsigned bottomLeftY, unsigned topRightX);

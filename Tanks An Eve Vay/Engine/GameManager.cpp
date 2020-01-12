@@ -9,8 +9,8 @@
 
 void GameManager::Initialize()
 {
-  m_Player1->setCanFire(true);
-	m_Map->FillTerrain(TerrainType::Hill);
+	m_Player1->setCanFire(true);
+	m_Map->FillTerrain(TerrainType::Random);
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
@@ -141,7 +141,8 @@ Vector2f GameManager::MovePlayer(int player)
 			{
 				if (m_nextMove == LEFT)
 				{
-					m_Player1->moveMyTank(Vector2f(-0.005,0));
+					Vector2f dv = m_Map->FindNextMove(m_Player1->GetTankPosition(),Vector2f(0.1,0.1), -1); //Mocked tank size
+					m_Player1->moveMyTank(dv);
 				}
 				else if (m_nextMove == RIGHT)
 				{
@@ -159,9 +160,6 @@ Vector2f GameManager::MovePlayer(int player)
 			return m_Player1->GetTankPosition();
 		}
 	}
-
-
-
 	else if (player == 2)
 	{
 		if(m_CurrentPlayer == 2)
@@ -174,6 +172,7 @@ Vector2f GameManager::MovePlayer(int player)
 				}
 				else if (m_nextMove == RIGHT)
 				{
+					Vector2f dv = m_Map->FindNextMove(m_Player1->GetTankPosition(), Vector2f(0.1, 0.1), -1);
 					m_Player2->moveMyTank(Vector2f(0.005, 0));
 				}
 				m_possibleMoves--;
@@ -296,7 +295,7 @@ double GameManager::GetPlayerAngle()
 
 int GameManager::GetPlayerHealth(int player)
 {
-	if (m_CurrentPlayer == 1)
+	if (player == 1)
 	{
 		return m_Player1->getHealth();
 	}
