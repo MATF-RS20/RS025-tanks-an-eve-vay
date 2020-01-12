@@ -86,9 +86,52 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 			return Vector2f();
 		}
 
-		if (dy < 1)
+		if (dy < 0)
 		{
-			return Vector2f(0.01, -0.01);
+			bool canFall = true;
+			for (unsigned i = leftX; i <= rightX; i++)
+			{
+				if (m_TerrainMatrix[i][y-1])
+				{
+					canFall = false;
+					break;
+				}
+			}
+
+			if (canFall)
+			{
+				unsigned jFirst = 0;
+				unsigned iFirst = 0;
+				for (unsigned i = leftX; i < rightX; i++)
+				{
+					if (outline->at(i) >= jFirst)
+					{
+						jFirst = outline->at(i);
+						iFirst = i;
+					}
+				}
+				unsigned iSecond = -1;
+				unsigned jSecond = -1;
+				for (unsigned i = leftX; i < rightX; i++)
+				{
+					if (i == iFirst)
+					{
+						continue;
+					}
+					if (outline->at(i) >= jFirst)
+					{
+						jSecond = outline->at(i);
+						iSecond = i;
+					}
+				}
+				double angle = std::atan((iFirst*1.0f - iSecond*1.0f) / (jFirst*1.0f - jSecond * 1.0f));
+				//playerTank.setTankDrawAngle(angle);
+				return Vector2f(0, -0.01*(y - jFirst));
+			}
+			else
+			{
+				return Vector2f(0.01, 0);
+			}
 		}
 
 	}
