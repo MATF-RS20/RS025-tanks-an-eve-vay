@@ -67,12 +67,12 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
 
 	if (move == 1)
 	{
-		a = (Coords(tankPosition.GetX() + tankSize.GetX() / 2));
-		b = (Coords(tankPosition.GetY())); // Angle?
+		a = (Coords(tankPosition.GetX() + tankSize.GetX()/6));
+		b = (Coords(tankPosition.GetY())- tankSize.GetY()/2); // Angle?
 
 		bool canMoveForward = true;
 		unsigned fromIndex = -1;
-		for (unsigned i = a; i < a + gridCells+5; i++)
+		for (unsigned i = a; i < a + gridCells; i++)
 		{
 			if (m_TerrainMatrix[i][b + 1])
 			{
@@ -231,7 +231,7 @@ void Terrain::FillTerrain(TerrainType type)
 		limit = m_N / 4;
 		for (unsigned i = limit; i < limit + 10;i++)
 		{
-			for (unsigned j = m_N/2; j < i + m_N/2-limit; j++)
+			for (unsigned j = m_N/2+1; j < i + m_N/2-limit; j++)
 			{
 				m_TerrainMatrix[i][j] = true;
 			}
