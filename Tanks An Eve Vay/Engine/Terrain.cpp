@@ -91,7 +91,7 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 			bool canFall = true;
 			for (unsigned i = leftX; i <= rightX; i++)
 			{
-				if (m_TerrainMatrix[i][y-1])
+				if (m_TerrainMatrix[i][y])
 				{
 					canFall = false;
 					break;
@@ -137,7 +137,7 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 	}
 	else if(move == -1)
 	{
-		double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2))) + 1;
+		double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2)));
 		double y = (Coords(tankPosition.GetY())) - 1;
 		double rightX = std::ceil(Coords(tankPosition.GetX() + tankSize.GetX() / 6)) - 1;
 
@@ -162,7 +162,7 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 			bool canFall = true;
 			for (unsigned i = leftX; i <= rightX; i++)
 			{
-				if (m_TerrainMatrix[i][y - 1])
+				if (m_TerrainMatrix[i][y])
 				{
 					canFall = false;
 					break;
@@ -173,7 +173,7 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 			{
 				unsigned jFirst = 0;
 				unsigned iFirst = 0;
-				for (unsigned i = leftX; i < rightX; i++)
+				for (unsigned i = leftX; i <= rightX; i++)
 				{
 					if (outline->at(i) >= jFirst)
 					{
@@ -201,7 +201,7 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 			}
 			else
 			{
-				return Vector2f(0.01, 0);
+				return Vector2f(-0.01, 0);
 			}
 		}
 	}
@@ -368,7 +368,7 @@ void Terrain::FillTerrain(TerrainType type)
 		unsigned limit = m_N / 2;
 		for (unsigned i = 0; i < m_N; i++)
 		{
-			for (unsigned j = 0; j < m_M; j++)
+			for (unsigned j = 0; j < m_M-1; j++)
 			{
 				if (j < limit)
 				{
