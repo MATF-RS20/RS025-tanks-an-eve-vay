@@ -31,6 +31,19 @@ Vector2f GameManager::GetProjectilePosition()
 	return m_Projectile->fly();
 }
 
+double GameManager::GetMovingAngle(int player)
+{
+	if (player == 1)
+	{
+		return m_Player1->getTankDrawAngle();
+	}
+	else if (player == 2)
+	{
+		return m_Player2->getTankDrawAngle();
+	}
+
+}
+
 Vector2f GameManager::GetProjectileSize()
 {
 	return m_Projectile->GetSize();
