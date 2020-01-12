@@ -39,20 +39,20 @@ void Engine::Update()
 		{
 		case VK_LEFT:
 		case 'A':
-			if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
-			{
+			//if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
+			//{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(LEFT);
-			}
+			//}
 			
 			break;
 		case VK_RIGHT:
 		case 'D':
-			if (GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
-			{
+			//if (GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
+			//{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(RIGHT);
-			}
+			//}
 			break;
 		case VK_SPACE:
 			if (GameManager::CanFire() == true)

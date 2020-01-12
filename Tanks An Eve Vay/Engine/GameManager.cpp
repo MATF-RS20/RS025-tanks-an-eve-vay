@@ -6,6 +6,8 @@
 
 #define Coords(x) ((m_MapSizeN*(x))/2.0f+(m_MapSizeN/2.0f))
 #define lineLength(x1,y1,x2,y2) (std::sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)))
+#define RealCoords(x) (((x)-m_MapSizeN/2)*(2.0f/m_MapSizeN))
+#define lenghtInMap(x) ((((x)-m_MapSizeN/2)*(2.0f/m_MapSizeN))+1.0f)
 
 void GameManager::Initialize()
 {
@@ -145,6 +147,41 @@ bool GameManager::CheckCollision()
 					GameManager::SetPlayerHitted(true, 1);
 				}
 			}
+
+			if (a > BlastRadious.GetX())
+			{
+				a -= BlastRadious.GetX();
+			}
+			if (b > BlastRadious.GetY())
+			{
+				b -= BlastRadious.GetY();
+			}
+			if (c < m_MapSizeN - BlastRadious.GetX())
+			{
+				c += BlastRadious.GetX();
+			}
+			if (d > m_MapSizeM - BlastRadious.GetY())
+			{
+				d += BlastRadious.GetY();
+			}
+
+			m_Map->DestroyTerrain(a, b, c, d);
+			delete m_Projectile;
+			m_Projectile = nullptr;
+			if (m_CurrentPlayer == 1)
+			{
+				GameManager::SetPlayerHitted(false, 2);
+			}
+
+			else if (m_CurrentPlayer == 2)
+			{
+				GameManager::SetPlayerHitted(false, 1);
+			}
+
+			GameManager::ChangePlayer();
+			return true;
+
+
 		} // END of tank collision
 
 		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
@@ -167,10 +204,10 @@ bool GameManager::CheckCollision()
 			}
 
 			
-			aMaloW = aMaloW + 0.05*2;
-			aMaloH = aMaloH + 0.3;
-			aMaloX = aMaloX - 0.05;
-			aMaloY = aMaloY - 0.1;
+			aMaloW = aMaloW + lenghtInMap(15);
+			aMaloH = aMaloH + lenghtInMap(15);
+			aMaloX = aMaloX - aMaloW/2;
+			aMaloY = aMaloY - aMaloH/2;
 
 
 			//TODO: weird things happen when using (NUMBER * 2 / m_mapSizeN) ??? cant implement AOE dmg using blast radious
