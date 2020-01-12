@@ -237,6 +237,24 @@ void Graphics::DrawStats()
 		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 200, 100));
 		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(m_ViewWidth - 200, 120));
 	}
+
+	if (player1Health <= 0 || player2Health <= 0)
+	{
+		std::string gameOver = "GAME OVER";
+		std::string winnerIs = "Winner is: ";
+		if (player1Health <= 0)
+		{
+			player1Health = 0;
+			winnerIs = winnerIs + player2Name;
+		}
+		else if (player2Health <= 0)
+		{
+			player2Health = 0;
+			winnerIs = winnerIs + player1Name;
+		}
+		DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth/2.2, m_ViewHeight/2.5));
+		DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 2.5+30));
+	}
 }
 
 void Graphics::DrawShape(Vertex array[],unsigned arraySize)
