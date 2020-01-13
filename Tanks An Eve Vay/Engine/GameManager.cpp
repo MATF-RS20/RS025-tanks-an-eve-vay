@@ -151,6 +151,8 @@ bool GameManager::CheckCollision()
 					m_Player2->setHealth(m_Player2->getHealth() - 10);
 					if (m_Player2->amIDead())
 					{
+						GameOver();
+						m_Player2->setHealth(0);
 						// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
 						//exit(0);
 					}
@@ -165,6 +167,8 @@ bool GameManager::CheckCollision()
 					m_Player1->setHealth(m_Player1->getHealth() - 10);
 					if (m_Player1->amIDead())
 					{
+						GameOver();
+						m_Player1->setHealth(0);
 						// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
 						//exit(0);
 					}
@@ -616,12 +620,25 @@ void GameManager::SetMovesDefault()
 	}
 }
 
+void GameManager::GameOver()
+{
+	m_GameOverIndicator = true;
+
+}
+
+bool GameManager::getGameIndicator()
+{
+	return m_GameOverIndicator;
+}
+
 
 
 //Initializing of static class member
 int GameManager::m_CurrentPlayer = 1;
 Player* GameManager::m_Player1 = new Player("Player1", 1);
 Player* GameManager::m_Player2 = new Player("Player2", 2);
+
+bool GameManager::m_GameOverIndicator = false;
 
 Terrain* GameManager::m_Map = new Terrain(200);
 int GameManager::m_MapSizeN = 0;

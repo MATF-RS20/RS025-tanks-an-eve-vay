@@ -36,6 +36,8 @@ private:
 
 	void UpdateMapState();
 
+	void DrawGameOver();
+
 	void DrawStats();
 
 	int m_ViewWidth;
