@@ -10,7 +10,7 @@ class Player
 {
 private:
 	Tank *m_playerTank;
-	int m_health = 99; // in range [0.0, 1.0]
+	int m_health = 100; // in range [0.0, 1.0]
 
 	double m_firePower = 0.8; // in range [0.0, 1.0]
 	double m_angle = 0;
@@ -19,6 +19,7 @@ private:
 	int m_uniqueID;
 	bool m_canFire = false;
 	int m_movesLeft = 3;
+	bool m_hitted = false;
 
 public:
 	Player();
@@ -34,8 +35,10 @@ public:
 	Tank &getPlayerTank();
 	const int getID();
 	Vector2f GetTankPosition();
+	Vector2f GetTankSize();
 	bool getCanFire();
 	int getMoves();
+	bool getHitted();
 
 
 	// Setters
@@ -44,6 +47,7 @@ public:
 	void setAngle(double angle);
 	void setCanFire(bool x);
 	void setMoves(int mov);
+	void setHitted(bool x);
 
 
 	void rotateTurret(double forAngle);
