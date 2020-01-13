@@ -22,3 +22,15 @@ void Tank::moveTank(Vector2f dv)
 	}
 	
 }
+
+double Tank::getTankDrawAngle() const
+{
+	return m_DrawAngle;
+}
+
+void Tank::setTankDrawAngle(const double newAngle)
+{
+	m_DrawAngle = newAngle;
+}
+
+

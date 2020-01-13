@@ -3,11 +3,10 @@
 
 Player::Player() {};
 
-Player::Player(Tank *t, std::string name, const int id) :
-	m_playerTank(t),
-	m_playerName(name),
-	m_uniqueID(id)
-{}
+Player::Player(Tank *t, std::string name, const int id)
+  : m_playerTank(t), m_playerName(name), m_uniqueID(id)
+{
+}
 
 Player::Player(std::string name, const int id) :
 	m_playerName(name),
@@ -25,7 +24,6 @@ Player::~Player()
 	delete m_playerTank;
 }
 
-
 int Player::getHealth() { return m_health; }
 double Player::getFirePower() { return m_firePower; }
 double Player::getAngle() { return m_angle; }
@@ -34,15 +32,20 @@ Tank& Player::getPlayerTank() { return *m_playerTank; }
 const int Player::getID() { return m_uniqueID; }
 Vector2f Player::GetTankPosition() { return (*this).getPlayerTank().GetPosition(); }
 Vector2f Player::GetTankSize() { return (*this).getPlayerTank().GetSize(); }
+
 bool Player::getCanFire()
 {
 	return m_canFire;
 }
 
-
 int Player::getMoves()
 {
 	return m_movesLeft;
+}
+
+double Player::getTankDrawAngle() const
+{
+	return m_playerTank->getTankDrawAngle();
 }
 bool Player::getHitted()
 {
@@ -60,6 +63,11 @@ void Player::setCanFire(bool x)
 void Player::setMoves(int mov)
 {
 	m_movesLeft = mov;
+}
+
+void Player::setTankDrawAngle(const double newAngle)
+{
+	m_playerTank->setTankDrawAngle(newAngle);
 }
 
 void Player::setHitted(bool x)

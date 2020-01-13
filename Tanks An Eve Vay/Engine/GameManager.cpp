@@ -11,8 +11,9 @@
 
 void GameManager::Initialize()
 {
-  m_Player1->setCanFire(true);
-	m_Map->FillTerrain(TerrainType::Flat);
+	m_Player1->setCanFire(true);
+	m_Map->FillTerrain(TerrainType::Random);
+
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
@@ -31,6 +32,19 @@ bool GameManager::GetGridValue(int i, int j) {
 Vector2f GameManager::GetProjectilePosition()
 {
 	return m_Projectile->fly();
+}
+
+double GameManager::GetMovingAngle(int player)
+{
+	if (player == 1)
+	{
+		return m_Player1->getTankDrawAngle();
+	}
+	else if (player == 2)
+	{
+		return m_Player2->getTankDrawAngle();
+	}
+
 }
 
 Vector2f GameManager::GetProjectileSize()
@@ -309,11 +323,13 @@ Vector2f GameManager::MovePlayer(int player)
 			{
 				if (m_nextMove == LEFT)
 				{
-					m_Player1->moveMyTank(Vector2f(-0.005,0));
+					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), -1,m_Outline); //Mocked tank size
+					m_Player1->moveMyTank(dv);
 				}
 				else if (m_nextMove == RIGHT)
 				{
-					m_Player1->moveMyTank(Vector2f(0.005, 0));
+					Vector2f dv = m_Map->FindNextMove(m_Player1->getPlayerTank(), 1,m_Outline); //Mocked tank size
+					m_Player1->moveMyTank(dv);
 				}
 
 				m_possibleMoves--;
@@ -327,9 +343,6 @@ Vector2f GameManager::MovePlayer(int player)
 			return m_Player1->GetTankPosition();
 		}
 	}
-
-
-
 	else if (player == 2)
 	{
 		if(m_CurrentPlayer == 2)
@@ -338,11 +351,13 @@ Vector2f GameManager::MovePlayer(int player)
 			{
 				if (m_nextMove == LEFT)
 				{
-					m_Player2->moveMyTank(Vector2f(-0.005, 0));
+					Vector2f dv = m_Map->FindNextMove(m_Player2->getPlayerTank(), -1, m_Outline); //Mocked tank size
+					m_Player2->moveMyTank(dv);
 				}
 				else if (m_nextMove == RIGHT)
 				{
-					m_Player2->moveMyTank(Vector2f(0.005, 0));
+					Vector2f dv = m_Map->FindNextMove(m_Player2->getPlayerTank(), 1, m_Outline); //Mocked tank size
+					m_Player2->moveMyTank(dv);
 				}
 				m_possibleMoves--;
 			}

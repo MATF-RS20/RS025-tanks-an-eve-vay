@@ -47,6 +47,7 @@ public:
 	static bool GetGridValue(int i, int j);
 	
 	static Vector2f GetProjectilePosition();
+	static double GetMovingAngle(int player);
 	static Vector2f GetProjectileSize();
 	static bool Projectile();
 
