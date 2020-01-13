@@ -51,6 +51,10 @@ public:
 	static Vector2f GetProjectileSize();
 	static bool Projectile();
 
+	static bool PlayerHitted(int p);
+
+	static void SetPlayerHitted(bool hit, int player);
+
 	static bool CheckCollision();
 	static void UpdateTerrainOutline();
 

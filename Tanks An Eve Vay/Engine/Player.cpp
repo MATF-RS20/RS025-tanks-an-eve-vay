@@ -3,11 +3,10 @@
 
 Player::Player() {};
 
-Player::Player(Tank *t, std::string name, const int id) :
-	m_playerTank(t),
-	m_playerName(name),
-	m_uniqueID(id)
-{}
+Player::Player(Tank *t, std::string name, const int id)
+  : m_playerTank(t), m_playerName(name), m_uniqueID(id)
+{
+}
 
 Player::Player(std::string name, const int id) :
 	m_playerName(name),
@@ -25,7 +24,6 @@ Player::~Player()
 	delete m_playerTank;
 }
 
-
 int Player::getHealth() { return m_health; }
 double Player::getFirePower() { return m_firePower; }
 double Player::getAngle() { return m_angle; }
@@ -33,20 +31,25 @@ std::string Player::getPlayerName() { return m_playerName; }
 Tank& Player::getPlayerTank() { return *m_playerTank; }
 const int Player::getID() { return m_uniqueID; }
 Vector2f Player::GetTankPosition() { return (*this).getPlayerTank().GetPosition(); }
+Vector2f Player::GetTankSize() { return (*this).getPlayerTank().GetSize(); }
 
 bool Player::getCanFire()
 {
 	return m_canFire;
 }
 
-
 int Player::getMoves()
 {
 	return m_movesLeft;
 }
+
 double Player::getTankDrawAngle() const
 {
 	return m_playerTank->getTankDrawAngle();
+}
+bool Player::getHitted()
+{
+	return m_hitted;
 }
 void Player::setHealth(int hp) { m_health = hp; }
 void Player::setFirePower(double power) { m_firePower = power; }
@@ -67,9 +70,19 @@ void Player::setTankDrawAngle(const double newAngle)
 	m_playerTank->setTankDrawAngle(newAngle);
 }
 
+void Player::setHitted(bool x)
+{
+	m_hitted = x;
+}
+
 bool Player::amIDead()
 {
-	return !(m_health); // False means Player is not dead ( yet :D )
+	if (m_health <= 0)
+	{
+		return true;
+	}
+	else
+		return false;
 }
 // This functions should call some function on m_playerTank(Tank class)
 void Player::rotateTurret(double forAngle) {}
