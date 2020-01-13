@@ -69,7 +69,12 @@ void Player::setHitted(bool x)
 
 bool Player::amIDead()
 {
-	return !(m_health); // False means Player is not dead ( yet :D )
+	if (m_health <= 0)
+	{
+		return true;
+	}
+	else
+		return false;
 }
 // This functions should call some function on m_playerTank(Tank class)
 void Player::rotateTurret(double forAngle) {}

@@ -135,6 +135,11 @@ bool GameManager::CheckCollision()
 				if (!(GameManager::PlayerHitted(2)))
 				{
 					m_Player2->setHealth(m_Player2->getHealth() - 10);
+					if (m_Player2->amIDead())
+					{
+						// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
+						//exit(0);
+					}
 					GameManager::SetPlayerHitted(true, 2);
 				}
 			}
@@ -144,6 +149,11 @@ bool GameManager::CheckCollision()
 				if (!(GameManager::PlayerHitted(1)))
 				{
 					m_Player1->setHealth(m_Player1->getHealth() - 10);
+					if (m_Player1->amIDead())
+					{
+						// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
+						//exit(0);
+					}
 					GameManager::SetPlayerHitted(true, 1);
 				}
 			}
