@@ -342,36 +342,50 @@ void Graphics::DrawTank(int player)
 	float playerW = static_cast<float>(playerSize.GetX());
 	float playerH = static_cast<float>(playerSize.GetY());
 
-	Vertex beta[]
+	Vertex base[6];
+	Vertex top[6];
+
+	if (player == 1)
 	{
-		Vertex(playerX-playerW/2 , playerY-0.01),
-		Vertex(playerX+playerW/2, playerY-0.01),
-		Vertex(playerX+playerW/2, playerY-0.01+playerH),
-		Vertex(playerX-playerW/2, playerY-0.01 + playerH),
-		Vertex(playerX-playerW/2 , playerY-0.01)
-	};
 
-	Vertex base[]
+		base[0] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
+		base[1] = Vertex(-0.7f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		base[2] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		base[3] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
+		base[4] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		base[5] = Vertex(0.2f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
+
+
+		top[0] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		top[1] = Vertex(-0.5f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
+		top[2] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
+		top[3] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		top[4] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
+		top[5] = Vertex(0.0f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+	}
+
+	else if (player == 2)
 	{
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
+		base[0] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
+		base[1] = Vertex(-0.7f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		base[2] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		base[3] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
+		base[4] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		base[5] = Vertex(0.2f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
 
-		Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
-	};
 
-	Vertex top[]
+		top[0] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		top[1] = Vertex(-0.5f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
+		top[2] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
+		top[3] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		top[4] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
+		top[5] = Vertex(0.0f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+	}
+
+	else
 	{
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY)
-	};
+		exit(1);
+	}
 
 #ifdef DEBUG
 	Vertex system[] 
@@ -392,16 +406,16 @@ void Graphics::DrawTank(int player)
 
 	Vertex turret[]
 	{
-		Vertex(-0.2f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
-		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
-		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
+		Vertex(-0.2f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
 
-		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
-		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,1,0,0),
-		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,1,0,0),
+		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
+		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
 	};
 	
-	DrawShape(beta, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP, ARRAYSIZE(beta));
+	
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
 	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));

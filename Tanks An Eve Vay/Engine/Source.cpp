@@ -11,7 +11,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 
 	Engine engine;
-	engine.Initialize(hInstance, "Title", "My WIndow Class", 1920, 1080);
+	engine.Initialize(hInstance, "Title", "My WIndow Class", 800, 600);
 
 	while (engine.ProcessMessages())
 	{
