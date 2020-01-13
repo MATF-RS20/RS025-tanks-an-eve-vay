@@ -346,97 +346,81 @@ void Graphics::DrawTank(int player)
 	float playerW = static_cast<float>(playerSize.GetX());
 	float playerH = static_cast<float>(playerSize.GetY());
 
-	Vertex base[6];
-	Vertex top[6];
+	float red = 0;
+	float blue = 0;
 
 	if (player == 1)
 	{
-
-		//Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		//Vertex(-0.7f*scalex + playerX,0.2f*scaley + playerY),
-		//Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-
-		//Vertex(-0.7f*scalex + playerX ,0.0f*scaley + playerY),
-		//Vertex(0.2f*scalex + playerX,0.2f*scaley + playerY),
-		//Vertex(0.2f*scalex + playerX,0.0f*scaley + playerY),
-
-		//Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle +playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
-	//	Vertex(-0.7f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-		//Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-
-		//Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
-//		Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-
-	//	Vertex(0.2f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
-
-		/*Vertex(-0.7f*scalex*cosAngle,0.2f*scaley*sinAngle ),
-		Vertex(0.2f*scalex*cosAngle ,0.2f*scaley*sinAngle ),
-
-		Vertex(-0.7f*scalex*cosAngle ,0.0f*scaley*sinAngle ),
-		Vertex(0.2f*scalex*cosAngle,0.2f*scaley*sinAngle ),
-		Vertex(0.2f*scalex*cosAngle,0.0f*scaley*sinAngle ),*/
-
-
-//	};
-
-		base[0] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
-		base[1] = Vertex(-0.7f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
-		base[2] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
-		base[3] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
-		base[4] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
-		base[5] = Vertex(0.2f*scalex + playerX, 0.0f*scaley + playerY, 0, 1, 0);
-
-		top[0] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
-		top[1] = Vertex(-0.5f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
-		top[2] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
-		top[3] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
-		top[4] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 0, 1, 0);
-		top[5] = Vertex(0.0f*scalex + playerX, 0.2f*scaley + playerY, 0, 1, 0);
+		red = 1;
+		blue = 0;
 	}
 
 	else if (player == 2)
 	{
-		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-		//Vertex(-0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
-		//Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
-		
-	//	Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-//		Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
-
-
-		//Vertex(0.0f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
-
-		/*
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(-0.5f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-
-		Vertex(-0.5f*scalex + playerX,0.2f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.4f*scaley + playerY),
-		Vertex(0.0f*scalex + playerX,0.2f*scaley + playerY)*/
-	//};
-
-		base[0] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
-		base[1] = Vertex(-0.7f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
-		base[2] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
-		base[3] = Vertex(-0.7f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
-		base[4] = Vertex(0.2f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
-		base[5] = Vertex(0.2f*scalex + playerX, 0.0f*scaley + playerY, 1, 0, 0);
-
-
-		top[0] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
-		top[1] = Vertex(-0.5f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
-		top[2] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
-		top[3] = Vertex(-0.5f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
-		top[4] = Vertex(0.0f*scalex + playerX, 0.4f*scaley + playerY, 1, 0, 0);
-		top[5] = Vertex(0.0f*scalex + playerX, 0.2f*scaley + playerY, 1, 0, 0);
+		blue = 1;
+		red = 0;
 	}
 
 	else
 	{
+		ErrorLogger::Log("DrawTank color setup: invalid player");
 		exit(1);
+		
 	}
+
+	float xB1 = -0.7f*scalex + playerX;
+	float xB2 = 0.2f*scalex + playerX;
+	float yB1 = 0.0f*scaley + playerY;
+	float yB2 = 0.2f*scaley + playerY;
+
+	Vertex base[]
+	{
+		Vertex(xB1, yB1, red, blue, 0),
+		Vertex(xB1, yB2, red, blue, 0),
+		Vertex(xB2, yB2, red, blue, 0),
+		Vertex(xB1, yB1, red, blue, 0),
+		Vertex(xB2, yB2, red, blue, 0),
+		Vertex(xB2, yB1, red, blue, 0)
+	};
+
+	xB1 = -0.5f*scalex + playerX;
+	xB2 = 0.0f*scalex + playerX;
+	yB1 = 0.2f*scaley + playerY;
+	yB2 = 0.4f*scaley + playerY;
+
+	Vertex top[]
+	{
+		Vertex(xB1, yB1, red, blue, 0),
+		Vertex(xB1, yB2, red, blue, 0),
+		Vertex(xB2, yB2, red, blue, 0),
+		Vertex(xB1, yB1, red, blue, 0),
+		Vertex(xB2, yB2, red, blue, 0),
+		Vertex(xB2, yB1, red, blue, 0)
+	};
+
+
+	// TODO: Rotation
+		//Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle +playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+	//	Vertex(-0.7f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		//Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		//Vertex(-0.7f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,-0.7f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+//		Vertex(0.2f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+	//	Vertex(0.2f*scalex*cosAngle - 0.0f*scaley*sinAngle + playerX,0.2f*scalex*sinAngle + 0.0f*scaley*cosAngle + playerY),
+		/*Vertex(-0.7f*scalex*cosAngle,0.2f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle ,0.2f*scaley*sinAngle ),
+		Vertex(-0.7f*scalex*cosAngle ,0.0f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle,0.2f*scaley*sinAngle ),
+		Vertex(0.2f*scalex*cosAngle,0.0f*scaley*sinAngle ),*/
+		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		//Vertex(-0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		//Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+	//	Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+//		Vertex(0.0f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		//Vertex(0.0f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+
+
+
 
 #ifdef DEBUG
 	Vertex system[] 
