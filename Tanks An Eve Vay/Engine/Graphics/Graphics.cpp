@@ -502,45 +502,23 @@ void Graphics::DrawProjectile()
 	Vector2f size = GameManager::GetProjectileSize();
 	double w = size.GetX();
 	double h = size.GetY();
-	
-	Vertex v[] = {
-		Vertex(x-w/2, y-h/2),
-		Vertex(x+w/2,y-h/2),
-		Vertex(x+w/2,y+h/2),
-		Vertex(x-w/2,y+h/2),
-		Vertex(x-w/2,y-h/2)
+
+	double x1 = x - w / 2.0f;
+	double x2 = x + w / 2.0f;
+
+	double y1 = y - h / 2.0f;
+	double y2 = y + h / 2.0f;
+
+	Vertex v[] =
+	{
+		Vertex(x1, y1),
+		Vertex(x1 ,y2),
+		Vertex(x2 ,y2),
+
+		Vertex(x1, y1),
+		Vertex(x2,y2),
+		Vertex(x2,y1),
 	};
 
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v);
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexBufferData;
-	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = v;
-
-	HRESULT hr = m_Device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, m_VertexBuffer.GetAddressOf());
-	if (FAILED(hr))
-	{
-		ErrorLogger::Log("Failed to draw Projectile");
-	}
-
-	m_DeviceContext->IASetInputLayout(m_VertexShader.GetInputLayout());
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-	m_DeviceContext->VSSetShader(m_VertexShader.GetShader(), NULL, 0);
-	m_DeviceContext->PSSetShader(m_PixelShader.GetShader(), NULL, 0);
-
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	m_DeviceContext->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
-
-	m_DeviceContext->Draw(ARRAYSIZE(v), 0);
-
-	m_VertexBuffer->Release();
+	DrawShape(v, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(v));
 }
