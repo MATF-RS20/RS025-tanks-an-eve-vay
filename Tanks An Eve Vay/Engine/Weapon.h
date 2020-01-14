@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include <math.h>
-#define GRAVITY 18.0f
+#define GRAVITY 25.0f
 #define PI (atan(1.0f)*4.0f)
 
 class Weapon : public Object
