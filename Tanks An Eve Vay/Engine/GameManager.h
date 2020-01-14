@@ -101,5 +101,8 @@ private:
 
 	static int m_possibleMoves;
 	static PlayerMovement m_nextMove;
+
+	static Player * GetPlayerOnTurn();
+	static Player * GetPlayer(int i);
 };
 
