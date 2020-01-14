@@ -662,10 +662,10 @@ void GameManager::RestartGameState()
 		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	case 2:
-		m_Map->FillTerrain(TerrainType::Hill);
+		m_Map->FillTerrain(TerrainType::Flat);
 		break;
 	case 3:
-		m_Map->FillTerrain(TerrainType::Hill);
+		m_Map->FillTerrain(TerrainType::Random);
 		break;
 	default:
 		m_Map->FillTerrain(TerrainType::Random);
