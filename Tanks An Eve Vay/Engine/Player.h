@@ -21,6 +21,8 @@ private:
 	int m_movesLeft = 3;
 	bool m_hitted = false;
 
+	unsigned m_score = 0;
+
 public:
 	Player();
 	Player(Tank *t, std::string name, const int id);
@@ -52,6 +54,10 @@ public:
 	void setTankDrawAngle(const double newAngle);
 
 	void setHitted(bool x);
+
+	void setScore(int x);
+
+	unsigned getScore();
 
 
 
