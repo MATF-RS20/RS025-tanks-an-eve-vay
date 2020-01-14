@@ -44,7 +44,8 @@ Player* GameManager::GetPlayerOnTurn()
 	else
 	{
 		ErrorLogger::Log("GetPlayerOnMove: current player");
-		return nullptr;
+		ShutDown();
+		exit(1);
 	}
 
 }
@@ -62,7 +63,8 @@ Player* GameManager::GetPlayer(int i)
 	else
 	{
 		ErrorLogger::Log("GetPlayer: invalid player");
-		return nullptr;
+		ShutDown();
+		exit(1);
 	}
 }
 

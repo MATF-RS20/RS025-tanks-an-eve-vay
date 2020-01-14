@@ -217,6 +217,8 @@ void Graphics::UpdateMapState()
 	m_DataSize = vectorSize;
 }
 
+
+
 void Graphics::DrawGameOver()
 {
 	std::string player1Name = GameManager::GetPlayerName(1);
@@ -241,12 +243,7 @@ void Graphics::DrawGameOver()
 	DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth / 2.2, m_ViewHeight / 2.5));
 	DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 2.5 + 30));
 
-	
-
-	
-
 	m_ShowPopUp = true;
-
 	
 }
 
@@ -366,14 +363,13 @@ void Graphics::DrawMouseIndicator()
 	int playerOnMove = GameManager::GetCurrentPlayer();
 	Vector2f playerPosition = GameManager::GetPlayerPosition(playerOnMove);
 	Vector2f playerSize = GameManager::GetPlayerSize(playerOnMove);
-	double power = GameManager::GetPlayerPower()*0.5;
+	double power = GameManager::GetPlayerPower()*0.6;
 
 	Vertex line[]
 	{
-		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()),
+		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()-0.03),
 		Vertex(power*std::cos(angle) + playerPosition.GetX(),power*std::sin(angle) + playerPosition.GetY())
 	};
-
 
 	//Vertex line []
 	//{
@@ -390,6 +386,7 @@ void Graphics::DrawMouseIndicator()
 	//	//Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0)
 	//};
 	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
+	
 }
 
 void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology, unsigned arraySize)
@@ -438,6 +435,7 @@ void Graphics::DrawTank(int player)
 	else
 	{
 		ErrorLogger::Log("DrawTank color setup: invalid player");
+		GameManager::ShutDown();
 		exit(1);
 
 	}
@@ -471,6 +469,30 @@ void Graphics::DrawTank(int player)
 		Vertex(xB2, yB2, red, blue, 0),
 		Vertex(xB2, yB1, red, blue, 0)
 	};
+
+	/*{
+		double angle = PI/4;
+		int playerOnMove = GameManager::GetCurrentPlayer();
+		if (player == playerOnMove)
+		{
+			angle = GameManager::GetPlayerAngle();
+		}
+	
+		Vector2f playerPosition = GameManager::GetPlayerPosition(player);
+		Vector2f playerSize = GameManager::GetPlayerSize(player);
+
+		Vertex top[]
+		{
+			Vertex(playerPosition.GetX() - 0.02,playerPosition.GetY() + -0.03 + playerSize.GetY()),
+			Vertex(0.06*std::cos(angle) + playerPosition.GetX(),0.06*std::sin(angle) + playerPosition.GetY()),
+			Vertex(playerPosition.GetX() - 0.021,playerPosition.GetY() + -0.03 + playerSize.GetY()),
+			Vertex(0.06*std::cos(angle) + playerPosition.GetX(),0.06*std::sin(angle) + playerPosition.GetY()),
+			Vertex(playerPosition.GetX() - 0.019,playerPosition.GetY() + -0.03 + playerSize.GetY()),
+			Vertex(0.06*std::cos(angle) + playerPosition.GetX(),0.06*std::sin(angle) + playerPosition.GetY())
+		};
+
+		DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(top));
+	}*/
 
 
 	// TODO: Rotation
@@ -507,23 +529,72 @@ void Graphics::DrawTank(int player)
 
 	double angle = GameManager::GetPlayerAngle();
 
-	double angleSin = std::sin(angle);
-	double angleCos = std::cos(angle);
+	if (GameManager::GetCurrentPlayer() != player)
+	{
+		sinAngle = std::sin(PI/2);
+		cosAngle = std::cos(PI/2);
+	}
+
+	else
+	{
+		sinAngle = std::sin(angle);
+		cosAngle = std::cos(angle);
+	}
 
 	Vertex turret[]
 	{
-		Vertex(-0.2f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
-		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
-		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
+	//	/*Vertex(-0.2f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+	//	Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+	//	Vertex(-0.2f*scalex + playerX,0.35f*scaley + playerY,0,0,0),
 
-		Vertex(-0.2f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
-		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
-		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
+	//	Vertex(-0.2f*scalex + playerX,0.35f*scaley + playerY,0,0,0),
+	//	Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
+	//	Vertex(0.5f*scalex + playerX,0.35f*scaley + playerY,0,0,0),*/
+
+		/*Vertex(-0.2f*scalex*cosAngle - 0.4f*scaley*sinAngle  + playerX,-0.2f*scalex*sinAngle + 0.4f*scaley*cosAngle  + playerY),
+		Vertex(0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle  + playerY),
+		Vertex(-0.2f*scalex*cosAngle - 0.35f*scaley*sinAngle + playerX,-0.2f*scalex*sinAngle + 0.35f*scaley*cosAngle + playerY),
+		Vertex(-0.2f*scalex*cosAngle - 0.35f*scaley*sinAngle + playerX,-0.2f*scalex*sinAngle + 0.35f*scaley*cosAngle + playerY),
+		Vertex(0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle +  playerX,0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		Vertex(0.5f*scalex*cosAngle - 0.35f*scaley*sinAngle + playerX,0.5f*scalex*sinAngle + 0.35f*scaley*cosAngle + playerY)*/
+		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
+
+		Vertex(playerX - 0.032,playerY+0.06),
+		Vertex(cosAngle*0.1 - 0.032 +  playerX, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.001,playerY + 0.001 +0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX-0.001, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.002,playerY + 0.002 + 0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX - 0.002, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.003,playerY + 0.003 + 0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX - 0.003, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.004,playerY + 0.004 + 0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX - 0.004, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.005,playerY + 0.005 + 0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX - 0.005, sinAngle*0.1 + playerY),
+		Vertex(playerX - 0.032 - 0.006,playerY + 0.006 + 0.06),
+		Vertex(cosAngle*0.1 - 0.032 + playerX - 0.006, sinAngle*0.1 + playerY),
+
+		Vertex(playerX + 0.001,playerY + 0.001 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.001, sinAngle*0.1 + playerY),
+		Vertex(playerX + 0.002,playerY + 0.002 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.002, sinAngle*0.1 + playerY),
+		Vertex(playerX + 0.003,playerY + 0.003 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.003, sinAngle*0.1 + playerY),
+		Vertex(playerX + 0.004,playerY + 0.004 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.004, sinAngle*0.1 + playerY),
+		Vertex(playerX + 0.005,playerY + 0.005 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.005, sinAngle*0.1 + playerY),
+		Vertex(playerX + 0.006,playerY + 0.006 + 0.06),
+		Vertex(cosAngle*0.1 + playerX + 0.006, sinAngle*0.1 + playerY)
+		//Vertex(-0.2f*scalex*cosAngle - 0.35f*scaley*sinAngle + playerX,-0.2f*scalex*sinAngle + 0.35f*scaley*cosAngle + playerY),
+		//Vertex(0.5f*scalex*cosAngle - 0.4f*scaley*sinAngle + playerX,0.5f*scalex*sinAngle + 0.4f*scaley*cosAngle + playerY),
+		//Vertex(0.5f*scalex*cosAngle - 0.35f*scaley*sinAngle + playerX,0.5f*scalex*sinAngle + 0.35f*scaley*cosAngle + playerY)
+
 	};
 
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
-	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
+	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(turret));
 	DrawMouseIndicator();
 }
 
