@@ -8,7 +8,7 @@
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
 
 #define PI (atan(1.0f)*4.0f)
-#define DEBUG
+//#define DEBUG
 #define Rsin(x,y,angle) (std::sqrt(x*x+y*y) * std::sin(angle + std::abs(std::atan(y/x))))
 #define Rcos(x,y,angle) (std::sqrt(x*x+y*y) * std::cos(angle + std::abs(std::atan(y/x))))
 
@@ -366,7 +366,7 @@ void Graphics::DrawMouseIndicator()
 	int playerOnMove = GameManager::GetCurrentPlayer();
 	Vector2f playerPosition = GameManager::GetPlayerPosition(playerOnMove);
 	Vector2f playerSize = GameManager::GetPlayerSize(playerOnMove);
-	double power = GameManager::GetPlayerPower();
+	double power = GameManager::GetPlayerPower()*0.5;
 
 	Vertex line[]
 	{

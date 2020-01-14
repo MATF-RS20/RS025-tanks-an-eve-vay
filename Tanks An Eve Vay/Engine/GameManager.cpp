@@ -395,7 +395,7 @@ float GameManager::ScaleRatioY()
 
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
-	double xScale = -1.0f + (mousePosition.GetX() / (1551.0f/2.0f));
+	double xScale = -1.0f + (mousePosition.GetX() / (1540.0f/2.0f));
 	double yScale = 1.0f - (mousePosition.GetY() / (1200.0f/2.0f));
 
 	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
@@ -550,6 +550,8 @@ void GameManager::UpdateTerrainOutline()
 			}
 		}
 	}
+	Fall(1);
+	Fall(2);
 }
 
 void GameManager::AllowMove(PlayerMovement side)
@@ -655,13 +657,13 @@ void GameManager::RestartGameState()
 	switch (mapRandom)
 	{
 	case 1:
-		m_Map->FillTerrain(TerrainType::Flat);
+		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	case 2:
 		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	case 3:
-		m_Map->FillTerrain(TerrainType::Random);
+		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	default:
 		m_Map->FillTerrain(TerrainType::Random);
@@ -672,6 +674,8 @@ void GameManager::RestartGameState()
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
 	UpdateTerrainOutline();
+	Fall(2);
+	Fall(1);
 }
 
 void GameManager::SetWindowSize(Vector2f size)
@@ -712,7 +716,7 @@ void GameManager::Fall(int i)
 		}
 		//double angle = std::atan((iFirst*1.0f - iSecond * 1.0f) / (jFirst*1.0f - jSecond * 1.0f));
 		//playerTank.setTankDrawAngle(angle);
-		//->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
+		GetPlayer(i)->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
 	}
 	else
 	{
