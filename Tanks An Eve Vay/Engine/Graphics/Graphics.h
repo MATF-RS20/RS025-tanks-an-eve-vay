@@ -36,10 +36,16 @@ private:
 
 	void UpdateMapState();
 
+	void DrawGameOver();
+
+	void ShowPopUp();
+
 	void DrawStats();
 
 	int m_ViewWidth;
 	int m_ViewHeight;
+
+	bool m_ShowPopUp = false;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> m_Device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_DeviceContext;

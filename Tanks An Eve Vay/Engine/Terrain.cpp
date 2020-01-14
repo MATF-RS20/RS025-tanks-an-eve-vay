@@ -328,14 +328,14 @@ void Terrain::FillTerrain(TerrainType type)
 	case TerrainType::Flat:
 	{
 		unsigned limit = m_N / 2;
-		for (unsigned i = 0; i < limit;i++)
+		for (unsigned i = 0; i < m_N; i++)
 		{
 			for (unsigned j = 0; j < m_M; j++)
 			{
-				//if (j < limit)
-				//{
+				if (j < limit)
+				{
 					m_TerrainMatrix[i][j] = true;
-				//}
+				}
 			}
 		}
 		break;

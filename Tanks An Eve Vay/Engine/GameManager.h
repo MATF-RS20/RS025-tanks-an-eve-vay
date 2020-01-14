@@ -27,6 +27,11 @@ public:
 	static Vector2f GetPlayerPosition(int player);
 	static Vector2f GetPlayerSize(int player);
 
+	static unsigned GetPlayerScore(int player);
+
+	static void AddScoreToPlayer(int player, unsigned score);
+
+
 	static float ScaleRatioX();
 	static float ScaleRatioY();
 
@@ -68,20 +73,31 @@ public:
 
 	static void SetMovesDefault();
 
-
-
 	static void SetWindowSize(Vector2f size);
+
+	static void GameOver();
+
+	static bool getGameIndicator();
+
+	static void ShutDown();
+
+	static void RestartGameState();
 protected:
-	static void Fall();
+	static void Fall(int i);
+
 private:
 	static Terrain* m_Map;
 	static int m_MapSizeN;
 	static int m_MapSizeM;
 
+	static bool m_GameOverIndicator;
+
 	static Player *m_Player1;
 	static Player *m_Player2;
 
 	static int m_CurrentPlayer;
+
+	static bool m_GameRepeat;
 
 	static Weapon* m_Projectile;
 
@@ -93,5 +109,8 @@ private:
 	static int m_WindowHeight;
 	static int m_WindowWidth;
 
+
+	static Player * GetPlayerOnTurn();
+	static Player * GetPlayer(int i);
 };
 

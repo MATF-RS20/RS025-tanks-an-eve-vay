@@ -75,6 +75,16 @@ void Player::setHitted(bool x)
 	m_hitted = x;
 }
 
+void Player::setScore(int x)
+{
+	m_score = x;
+}
+
+unsigned Player::getScore()
+{
+	return m_score;
+}
+
 bool Player::amIDead()
 {
 	if (m_health <= 0)

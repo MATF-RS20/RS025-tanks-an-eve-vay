@@ -2,6 +2,7 @@
 #include <vector>
 #include "..\\GameManager.h"
 #include <DirectXMath.h>
+#include <WinUser.h>
 
 #define SCALE_RATIO_X (GameManager::ScaleRatioX())
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
@@ -27,7 +28,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	}
 
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_DeviceContext.Get());
-	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(),L"Fonts\\stats.spritefont");
+	m_SpriteFont = std::make_unique<DirectX::SpriteFont>(m_Device.Get(), L"Fonts\\stats.spritefont");
 
 	m_Data = std::vector<Vertex>(1000000);
 
@@ -42,11 +43,11 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
-	float bgColor[] = { 135.f/255.0f,206.0f/255.0f,250.0f/255.0f };
+	float bgColor[] = { 135.f / 255.0f,206.0f / 255.0f,250.0f / 255.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), bgColor);
 
 	//BEGIN DRAW REGION
-	
+
 	DrawMap();
 	DrawTank(1);
 	DrawTank(2);
@@ -61,10 +62,25 @@ void Graphics::RenderFrame()
 		}
 	}
 	DrawStats();
+
+	if (m_ShowPopUp)
+	{
+		ShowPopUp();
+	}
+
+	if (GameManager::getGameIndicator())
+	{
+
+		DrawGameOver();
+
+	}
+
 	//END DRAW REGION
 
 	m_SwapChain->Present(1, NULL);
 }
+
+
 
 bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 {
@@ -110,7 +126,7 @@ bool Graphics::InitializeDirectX(HWND hwdn, int width, int height)
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-	
+
 	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(backBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
@@ -151,12 +167,12 @@ bool Graphics::InitializeShaders()
 
 	UINT numElements = ARRAYSIZE(layout);
 
-	if (!m_VertexShader.Initialize(m_Device, L"..\\x64\\Debug\\vertexshader.cso",layout,numElements))
+	if (!m_VertexShader.Initialize(m_Device, L"..\\x64\\Debug\\vertexshader.cso", layout, numElements))
 	{
 		return false;
 	}
 
-	if (!m_PixelShader.Initialize(m_Device , L"..\\x64\\Debug\\pixelshader.cso"))
+	if (!m_PixelShader.Initialize(m_Device, L"..\\x64\\Debug\\pixelshader.cso"))
 	{
 		return false;
 	}
@@ -201,6 +217,75 @@ void Graphics::UpdateMapState()
 	m_DataSize = vectorSize;
 }
 
+void Graphics::DrawGameOver()
+{
+	std::string player1Name = GameManager::GetPlayerName(1);
+	std::string player2Name = GameManager::GetPlayerName(2);
+	int player1Health = GameManager::GetPlayerHealth(1);
+	int player2Health = GameManager::GetPlayerHealth(2);
+
+	std::string gameOver = "GAME OVER";
+	std::string winnerIs = "Winner is: ";
+
+	if (player1Health <= 0)
+	{
+		winnerIs = winnerIs + player2Name;
+		GameManager::AddScoreToPlayer(2, GameManager::GetPlayerScore(2) + 1);
+	}
+	else if (player2Health <= 0)
+	{
+		winnerIs = winnerIs + player1Name;
+		GameManager::AddScoreToPlayer(1, GameManager::GetPlayerScore(1) + 1);
+	}
+
+	DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth / 2.2, m_ViewHeight / 2.5));
+	DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 2.5 + 30));
+
+	
+
+	
+
+	m_ShowPopUp = true;
+
+	
+}
+
+void Graphics::ShowPopUp()
+{
+	std::string player1Name = GameManager::GetPlayerName(1);
+	std::string player2Name = GameManager::GetPlayerName(2);
+	unsigned player1Score = GameManager::GetPlayerScore(1);
+	unsigned player2Score = GameManager::GetPlayerScore(2);
+
+	std::string scoreInfo = "Current score is:\n" + player1Name + " " + std::to_string(player1Score) + " : " + std::to_string(player2Score) + " " + player2Name + "\nDo you want rematch?";
+	std::wstring wScore = std::wstring(scoreInfo.begin(), scoreInfo.end());
+	LPCWSTR sw = wScore.c_str();
+
+	int msgboxID = MessageBox(
+		NULL,
+		(LPCWSTR)sw,
+		(LPCWSTR)L"Good Game Well Played",
+		MB_YESNO | MB_DEFBUTTON1 | MB_ICONQUESTION
+	);
+
+	switch (msgboxID)
+	{
+	case IDYES:
+		GameManager::RestartGameState();
+		UpdateMapState();
+		GameManager::AddScoreToPlayer(1, player1Score);
+		GameManager::AddScoreToPlayer(2, player2Score);
+		break;
+	case IDNO:
+		GameManager::ShutDown();
+		exit(0);
+		break;
+	}
+
+	m_ShowPopUp = false;
+
+}
+
 void Graphics::DrawStats()
 {
 	std::string player1Name = GameManager::GetPlayerName(1);
@@ -209,7 +294,7 @@ void Graphics::DrawStats()
 	int player2Health = GameManager::GetPlayerHealth(2);
 	int currentPlayer = GameManager::GetCurrentPlayer();
 	int playerAngle = static_cast<int>(GameManager::GetPlayerAngle() * 180 / PI);
-	int playerPower = static_cast<int>(GameManager::GetPlayerPower()*100);
+	int playerPower = static_cast<int>(GameManager::GetPlayerPower() * 100);
 	int leftMoves = GameManager::MovesLeft();
 	std::string playerBarStr = "Player: ";
 	std::string playerNameStr = "Name : ";
@@ -229,37 +314,19 @@ void Graphics::DrawStats()
 		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(20, 120));
 	}
 
-	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth-200, 20));
+	DrawTextOnScreen(playerBarStr, Vector2f(m_ViewWidth - 200, 20));
 	DrawTextOnScreen(playerNameStr + player2Name, Vector2f(m_ViewWidth - 200, 40));
 	DrawTextOnScreen(playerHealthStr + std::to_string(player2Health), Vector2f(m_ViewWidth - 200, 60));
 
 	if (currentPlayer == 2)
 	{
-		DrawTextOnScreen(playerAngleStr + std::to_string(180-playerAngle), Vector2f(m_ViewWidth - 200, 80));
+		DrawTextOnScreen(playerAngleStr + std::to_string(180 - playerAngle), Vector2f(m_ViewWidth - 200, 80));
 		DrawTextOnScreen(playerPowerStr + std::to_string(playerPower), Vector2f(m_ViewWidth - 200, 100));
 		DrawTextOnScreen(playerLeftMovesStr + std::to_string(leftMoves), Vector2f(m_ViewWidth - 200, 120));
 	}
-
-	if (player1Health <= 0 || player2Health <= 0)
-	{
-		std::string gameOver = "GAME OVER";
-		std::string winnerIs = "Winner is: ";
-		if (player1Health <= 0)
-		{
-			player1Health = 0;
-			winnerIs = winnerIs + player2Name;
-		}
-		else if (player2Health <= 0)
-		{
-			player2Health = 0;
-			winnerIs = winnerIs + player1Name;
-		}
-		DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth/2.2, m_ViewHeight/2.5));
-		DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 2.5+30));
-	}
 }
 
-void Graphics::DrawShape(Vertex array[],unsigned arraySize)
+void Graphics::DrawShape(Vertex array[], unsigned arraySize)
 {
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -325,17 +392,17 @@ void Graphics::DrawMouseIndicator()
 	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
 }
 
-void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize)
+void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology, unsigned arraySize)
 {
 	m_DeviceContext->IASetPrimitiveTopology(primitiveTopology);
-	DrawShape(array,arraySize);
+	DrawShape(array, arraySize);
 }
 
 void Graphics::DrawTextOnScreen(std::string text, Vector2f position)
 {
 	const std::wstring s = StringConverter::StringToWide(text);
 	m_SpriteBatch->Begin();
-	m_SpriteFont->DrawString(m_SpriteBatch.get(),s.data(), DirectX::XMFLOAT2(position.GetX(), position.GetY()), DirectX::Colors::Black);
+	m_SpriteFont->DrawString(m_SpriteBatch.get(), s.data(), DirectX::XMFLOAT2(position.GetX(), position.GetY()), DirectX::Colors::Black);
 	m_SpriteBatch->End();
 }
 
@@ -343,7 +410,7 @@ void Graphics::DrawTank(int player)
 {
 	float scalex = 0.1 / 1.4f;
 	float scaley = 0.1 / 0.5f;
-	double playerAngle =0;
+	double playerAngle = 0;
 	double cosAngle = std::cos(playerAngle);
 	double sinAngle = std::sin(playerAngle);
 
@@ -372,7 +439,7 @@ void Graphics::DrawTank(int player)
 	{
 		ErrorLogger::Log("DrawTank color setup: invalid player");
 		exit(1);
-		
+
 	}
 
 	float xB1 = -0.7f*scalex + playerX;
@@ -427,14 +494,14 @@ void Graphics::DrawTank(int player)
 		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
 
 #ifdef DEBUG
-	Vertex system[] 
+	Vertex system[]
 	{
 		Vertex(-1,0),
 		Vertex(1,0),
 		Vertex(-0.5,-1),
 		Vertex(-0.5,1)
 	};
-	DrawShape(system, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST,ARRAYSIZE(system));
+	DrawShape(system, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(system));
 #endif
 	//TODO: Fix to drawing that are more appropriate for rotation
 
@@ -453,7 +520,7 @@ void Graphics::DrawTank(int player)
 		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
 		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
 	};
-	
+
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
 	DrawShape(turret, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(turret));
