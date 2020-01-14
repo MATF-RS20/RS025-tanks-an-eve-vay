@@ -665,7 +665,7 @@ void GameManager::RestartGameState()
 		m_Map->FillTerrain(TerrainType::Flat);
 		break;
 	case 3:
-		m_Map->FillTerrain(TerrainType::Random);
+		m_Map->FillTerrain(TerrainType::Pyramid);
 		break;
 	default:
 		m_Map->FillTerrain(TerrainType::Random);

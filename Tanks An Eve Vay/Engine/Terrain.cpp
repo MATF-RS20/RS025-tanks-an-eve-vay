@@ -208,101 +208,6 @@ Vector2f Terrain::FindNextMove(Tank & playerTank, int move, std::vector<unsigned
 
 	return Vector2f();
 }
-/*
-Vector2f Terrain::FindNextMove(Tank & playerTank, int move)
-{
-	if (move != 1 && move != -1)
-	{
-		return Vector2f(0,0);
-	}
-
-	double gridCells = std::ceil(Coords(MoveLength));
-	if (gridCells <= 0)
-	{
-		ErrorLogger::Log("gredCells < 0");
-		return Vector2f(0, 0);
-	}
-
-	double a, b;
-	Vector2f tankPosition = playerTank.GetPosition();
-	Vector2f tankSize = playerTank.GetSize();
-
-	if (move == 1)
-	{
-		a = (Coords(tankPosition.GetX() + tankSize.GetX()/6));
-		b = (Coords(tankPosition.GetY())- tankSize.GetY()/2); // Angle?
-
-		bool canMoveForward = true;
-		unsigned fromIndex = -1;
-		for (unsigned i = a; i < a + gridCells; i++)
-		{
-			if (m_TerrainMatrix[i][b + 1])
-			{
-				canMoveForward = false;
-				fromIndex = i;
-				break;
-			}
-		}
-
-		if (canMoveForward)
-		{
-			return Vector2f(0.005, 0);
-		}/*
-		else
-		{
-			return Vector2f(-0.005, 0);
-		}
-
-		bool canGoUp = true;
-		Vector2f firstInSeq(fromIndex,b+1);
-		Vector2f lastInSeq(fromIndex,b+1);
-		int lastHeight = 1;
-		for(unsigned i = fromIndex;i<=fromIndex + gridCells;i++)
-		{
-			int currentHeight = 0;
-			for (unsigned j = b; j < m_M; j++)
-			{
-				if (m_TerrainMatrix[i][j])
-				{
-					currentHeight++;
-				}
-				else
-				{
-					break;
-				}
-			}
-			if (currentHeight - 1 > lastHeight)
-			{
-				canGoUp = false;
-			}
-			else
-			{
-				lastHeight = currentHeight;
-			}
-			if (i == gridCells - 1)
-			{
-				lastInSeq = Vector2f(i, b +currentHeight);
-			}
-			if (i == fromIndex)
-			{
-				firstInSeq = Vector2f(i, b+ currentHeight);
-			}
-		}
-
-		double angle = std::atan((lastInSeq.GetY() - firstInSeq.GetY()) / (lastInSeq.GetX() - firstInSeq.GetY()));
-		if (angle <= PI / 4) 
-		{
-			canGoUp = true;
-			return Vector2f(0.005, 0.005);
-		}
-	}
-	
-
-	return Vector2f();
-}
-*/
-
-
 
 void Terrain::UpdateTerrainState(unsigned bottomLeftX,unsigned bottomLeftY, unsigned topRightX)
 {
@@ -327,7 +232,7 @@ void Terrain::FillTerrain(TerrainType type)
 	{
 	case TerrainType::Flat:
 	{
-		unsigned limit = m_N / 2;
+		unsigned limit = m_N * 4 / 7;
 		for (unsigned i = 0; i < m_N; i++)
 		{
 			for (unsigned j = 0; j < m_M; j++)
@@ -345,17 +250,17 @@ void Terrain::FillTerrain(TerrainType type)
 		unsigned hillStart = m_N / 4;
 		for (unsigned i = 0u; i < m_N; i++)
 		{
-			for (unsigned j = 0u; j < m_M / 5; j++)
+			for (unsigned j = 0u; j < m_M / 2; j++)
 			{
 				m_TerrainMatrix[i][j] = true;
 			}
 
 		}
-		for (unsigned i = hillStart; i < 3 * m_N / 4; ++i)
+		for (unsigned i = hillStart; i < m_N * 35 / 36; ++i)
 		{
-			for (unsigned j = m_M / 5; j < 3 * m_N / 4; j++)
+			for (unsigned j = m_M / 2; j < m_N * 35 / 36; j++)
 			{
-				if (i + j <= 3 * m_N / 4)
+				if (i + j <= m_N * 35 / 36)
 				{
 					m_TerrainMatrix[i][j] = true;
 				}
@@ -363,6 +268,49 @@ void Terrain::FillTerrain(TerrainType type)
 		}
 		break;
 	}
+
+	case TerrainType::Pyramid:
+	{
+		for (unsigned i = 0u; i < m_N; i++)
+		{
+			for (unsigned j = 0u; j < m_M / 5; j++)
+			{
+				m_TerrainMatrix[i][j] = true;
+			}
+
+		}
+		unsigned hillStart = m_N / 6;
+		unsigned limit = m_N /2;
+		unsigned jot = m_N / 5;
+
+		for (unsigned i = hillStart; i < m_N / 2; ++i)
+		{
+			for (unsigned j = m_M / 5; j < jot; j++)
+			{
+				if (j)
+				{
+					m_TerrainMatrix[i][j] = true;
+				}
+			}
+			jot++;
+		}
+
+		for (unsigned i = limit; i < m_N*5/6+2; ++i)
+		{
+			for (unsigned j = jot-1; j >= m_N/5; j--)
+			{
+				if (j)
+				{
+					m_TerrainMatrix[i][j] = true;
+				}
+			}
+			jot--;
+		}
+		break;
+
+		break;
+	}
+
 	case TerrainType::Random:
 	{
 		unsigned limit = m_N / 2;

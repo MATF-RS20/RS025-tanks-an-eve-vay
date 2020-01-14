@@ -10,7 +10,8 @@ enum TerrainType
 {
 	Flat,
 	Hill,
-	Sin,
+	Pyramid,
+	Greenland,
 	Random
 };
 
