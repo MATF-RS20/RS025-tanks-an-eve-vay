@@ -1,4 +1,4 @@
-##Tanks an eve Vay
+### Tanks an eve Vay
 
 Clanovi tima:
 Stefan Isailovic 29/2016
@@ -13,4 +13,4 @@ Dva igraca na raspolaganju ce imati jedno oruzje i tri moguca poteza za kretanje
 Igra belezi score i nakon svake partije igraci se mogu revansirati i ponovo zapoceti igru.
 Na raspolaganju su im tri mape gde se prilikom pocetka igre, na proizvoljan nacin bira jedna na kojoj ce poceti partija.
 Igra se trenutno nalazi u alpha fazi i predvidjene su mnogobrojne promene i dodaci namenjene poboljsanju kvaliteta igre.
-##GL HF !
+## GL HF !
