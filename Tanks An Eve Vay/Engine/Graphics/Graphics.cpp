@@ -240,8 +240,8 @@ void Graphics::DrawGameOver()
 		GameManager::AddScoreToPlayer(1, GameManager::GetPlayerScore(1) + 1);
 	}
 
-	DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth / 2.2, m_ViewHeight / 2.5));
-	DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 2.5 + 30));
+	DrawTextOnScreen(gameOver, Vector2f(m_ViewWidth / 2.2, m_ViewHeight / 3.5));
+	DrawTextOnScreen(winnerIs, Vector2f(m_ViewWidth / 2.2 - 35, m_ViewHeight / 3.5 + 30));
 
 	m_ShowPopUp = true;
 	
@@ -258,6 +258,8 @@ void Graphics::ShowPopUp()
 	std::wstring wScore = std::wstring(scoreInfo.begin(), scoreInfo.end());
 	LPCWSTR sw = wScore.c_str();
 
+	ShowCursor(TRUE);
+
 	int msgboxID = MessageBox(
 		NULL,
 		(LPCWSTR)sw,
@@ -272,6 +274,7 @@ void Graphics::ShowPopUp()
 		UpdateMapState();
 		GameManager::AddScoreToPlayer(1, player1Score);
 		GameManager::AddScoreToPlayer(2, player2Score);
+		ShowCursor(FALSE);
 		break;
 	case IDNO:
 		GameManager::ShutDown();

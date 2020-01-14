@@ -160,7 +160,7 @@ bool GameManager::CheckCollision()
 			{
 				if (!(GameManager::PlayerHitted(2)))
 				{
-					m_Player2->setHealth(m_Player2->getHealth() - 10);
+					m_Player2->setHealth(m_Player2->getHealth() - 30);
 					GameManager::SetPlayerHitted(true, 2);
 				}
 			}
@@ -168,7 +168,7 @@ bool GameManager::CheckCollision()
 			{
 				if (!(GameManager::PlayerHitted(1)))
 				{
-					m_Player1->setHealth(m_Player1->getHealth() - 10);
+					m_Player1->setHealth(m_Player1->getHealth() - 30);
 					GameManager::SetPlayerHitted(true, 1);
 				}
 			}
@@ -257,7 +257,7 @@ bool GameManager::CheckCollision()
 				{
 					if (!(GameManager::PlayerHitted(2)))
 					{
-						m_Player2->setHealth(m_Player2->getHealth() - 5);
+						m_Player2->setHealth(m_Player2->getHealth() - 15);
 						GameManager::SetPlayerHitted(true, 2);
 					}
 				}
@@ -265,7 +265,7 @@ bool GameManager::CheckCollision()
 				{
 					if (!(GameManager::PlayerHitted(1)))
 					{
-						m_Player1->setHealth(m_Player1->getHealth() - 5);
+						m_Player1->setHealth(m_Player1->getHealth() - 15);
 						GameManager::SetPlayerHitted(true, 1);
 					}
 				}
