@@ -385,8 +385,8 @@ float GameManager::ScaleRatioY()
 }
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
-	double xScale = -1.0f + (mousePosition.GetX() / (m_WindowWidth/2.0f));
-	double yScale = 1.f - (mousePosition.GetY() / (m_WindowHeight/2.0f));
+	double xScale = -1.0f + (mousePosition.GetX() / (1551.0f/2.0f));
+	double yScale = 1.0f - (mousePosition.GetY() / (1200.0f/2.0f));
 
 	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
 	double radianAngle = 0.0f;
