@@ -39,23 +39,23 @@ void Engine::Update()
 		{
 		case VK_LEFT:
 		case 'A':
-			//if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
-			//{
+			if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true && !GameManager::getGameIndicator())
+			{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(LEFT);
-			//}
+			}
 			
 			break;
 		case VK_RIGHT:
 		case 'D':
-			//if (GameManager::MovesLeft() > 0 && GameManager::CanFire() == true)
-			//{
+			if (GameManager::MovesLeft() > 0 && GameManager::CanFire() == true && !GameManager::getGameIndicator())
+			{
 				GameManager::ReduceMoves();
 				GameManager::AllowMove(RIGHT);
-			//}
+			}
 			break;
 		case VK_SPACE:
-			if (GameManager::CanFire() == true)
+			if (GameManager::CanFire() == true && !GameManager::getGameIndicator())
 			{
 				GameManager::Fire();
 			}
@@ -69,7 +69,7 @@ void Engine::Update()
 	while (!m_Mouse.EventBuffer_IsEmpty())
 	{
 		MouseEvent mouseEvent = m_Mouse.ReadNextEvent();
-		if (mouseEvent.GetEventType() == MouseEvent::EventType::Move)
+		if (mouseEvent.GetEventType() == MouseEvent::EventType::Move && !GameManager::getGameIndicator())
 		{
 			Vector2f position(mouseEvent.GetMouseX(), mouseEvent.GetMouseY());
 			GameManager::RotateTurret(position);
