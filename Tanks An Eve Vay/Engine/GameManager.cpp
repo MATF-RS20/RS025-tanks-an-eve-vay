@@ -31,17 +31,44 @@ Vector2f GameManager::GetProjectilePosition()
 	return m_Projectile->fly();
 }
 
-double GameManager::GetMovingAngle(int player)
+Player* GameManager::GetPlayerOnTurn()
 {
-	if (player == 1)
+	if (m_CurrentPlayer == 1)
 	{
-		return m_Player1->getTankDrawAngle();
+		return m_Player1;
 	}
-	else if (player == 2)
+	else if (m_CurrentPlayer == 2)
 	{
-		return m_Player2->getTankDrawAngle();
+		return m_Player2;
+	}
+	else
+	{
+		ErrorLogger::Log("GetPlayerOnMove: current player");
+		return nullptr;
 	}
 
+}
+
+Player* GameManager::GetPlayer(int i)
+{
+	if (i == 1)
+	{
+		return m_Player1;
+	}
+	else if (i == 2)
+	{
+		return m_Player2;
+	}
+	else
+	{
+		ErrorLogger::Log("GetPlayer: invalid player");
+		return nullptr;
+	}
+}
+
+double GameManager::GetMovingAngle(int player)
+{
+	return GetPlayer(player)->getTankDrawAngle();
 }
 
 Vector2f GameManager::GetProjectileSize()
@@ -67,33 +94,18 @@ bool GameManager::Projectile()
 
 bool GameManager::PlayerHitted(int p)
 {
-	if (p == 1)
-	{
-		return m_Player1->getHitted();
-	}
-
-	else if (p == 2)
-	{
-		return m_Player2->getHitted();
-	}
+	return GetPlayer(p)->getHitted();
 }
 
 void GameManager::SetPlayerHitted(bool hit, int player)
 {
-	if (player == 1)
-	{
-		m_Player1->setHitted(hit);
-	}
-
-	else if (player == 2)
-	{
-		m_Player2->setHitted(hit);
-	}
+	return GetPlayer(player)->setHitted(hit);
 }
-
 
 bool GameManager::CheckCollision()
 {
+
+	// Tank 
 	Vector2f tankPosition;
 	Vector2f tankSize;
 
@@ -109,13 +121,12 @@ bool GameManager::CheckCollision()
 		tankSize = m_Player1->GetTankSize();
 	}
 
-
 	double tankWidth = tankSize.GetX();
 	double tankHeight = tankSize.GetY();
 	double tankX = tankPosition.GetX() - tankWidth / 2;
 	double tankY = tankPosition.GetY() - 0.01;
 
-
+	// Projectile
 	Vector2f objectPostion = m_Projectile->GetPosition();
 	Vector2f objectSize = m_Projectile->GetSize();
 	Vector2f BlastRadious = Vector2f(5, 5); //TODO Link to Projectile Blast Radious
@@ -123,42 +134,44 @@ bool GameManager::CheckCollision()
 	double b = (Coords(objectPostion.GetY() - objectSize.GetY() / 2));
 	double c = (Coords(objectPostion.GetX() + objectSize.GetX() / 2));
 	double d = (Coords(objectPostion.GetY() + objectSize.GetY() / 2));
+	double projectileW = objectSize.GetX();
+	double projectileH = objectSize.GetY();
+	double projectileX = objectPostion.GetX() - projectileW / 2;
+	double projectileY = objectPostion.GetY();
 
 
-	double aMaloW = objectSize.GetX();
-	double aMaloH = objectSize.GetY();
-	double aMaloX = objectPostion.GetX() - aMaloW / 2;
-	double aMaloY = objectPostion.GetY();
-
-
+	// Out of map
 	if (a < 0 || b < 0 || c < 0 || d < 0)
 	{
 		return false;
 	}
+
+	// Is projectile in map range
 	if (a < m_MapSizeN && c < m_MapSizeN)
 	{
 		// Tank collision with projectile
-		if ((tankX < aMaloX + aMaloW) && (aMaloX < tankX + tankWidth)
-			&& (tankY < aMaloY + aMaloH) && (aMaloY < tankY + tankHeight))
+		if ((tankX < projectileX + projectileW) && (projectileX < tankX + tankWidth)
+			&& (tankY < projectileY + projectileH) && (projectileY < tankY + tankHeight))
 		{
+			// Friendly fire is off - cheking if enemy tank is hitted 
 			if (m_CurrentPlayer == 1)
 			{
 				if (!(GameManager::PlayerHitted(2)))
 				{
-					m_Player2->setHealth(m_Player2->getHealth() - 90);
+					m_Player2->setHealth(m_Player2->getHealth() - 10);
 					GameManager::SetPlayerHitted(true, 2);
 				}
 			}
-
 			else if (m_CurrentPlayer == 2)
 			{
 				if (!(GameManager::PlayerHitted(1)))
 				{
-					m_Player1->setHealth(m_Player1->getHealth() - 90);
+					m_Player1->setHealth(m_Player1->getHealth() - 10);
 					GameManager::SetPlayerHitted(true, 1);
 				}
 			}
 
+			// Setting blast radious for destroying map under tank
 			if (a > BlastRadious.GetX())
 			{
 				a -= BlastRadious.GetX();
@@ -176,34 +189,29 @@ bool GameManager::CheckCollision()
 				d += BlastRadious.GetY();
 			}
 
+			// Destroying map and projectile
 			m_Map->DestroyTerrain(a, b, c, d);
 			delete m_Projectile;
 			m_Projectile = nullptr;
 
+			// Cheking if any of them are dead to call GameOver
 			if (m_Player1->amIDead())
 			{
-
 				m_Player1->setHealth(0);
-				// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
-				//exit(0);
 				GameOver();
+				return true;
 			}
-
 			if (m_Player2->amIDead())
 			{
-
 				m_Player2->setHealth(0);
-				// ovde bi trebalo oslobadjati sve sto je neophodno dok se program ne ugasi
-				//exit(0);
 				GameOver();
+				return true;
 			}
-
 
 			if (m_CurrentPlayer == 1)
 			{
 				GameManager::SetPlayerHitted(false, 2);
 			}
-
 			else if (m_CurrentPlayer == 2)
 			{
 				GameManager::SetPlayerHitted(false, 1);
@@ -211,10 +219,9 @@ bool GameManager::CheckCollision()
 
 			GameManager::ChangePlayer();
 			return true;
+		} // End tank collision with projectile
 
-
-		} // END of tank collision
-
+		// Projectile collision with map
 		if (m_Outline->at(a) >= b || m_Outline->at(c) >= d)
 		{
 			if (a > BlastRadious.GetX())
@@ -234,16 +241,15 @@ bool GameManager::CheckCollision()
 				d += BlastRadious.GetY();
 			}
 
+			// Settings for cheking if projectile miss the tank, but blast radious hit it
+			projectileW = projectileW + lenghtInMap(15);
+			projectileH = projectileH + lenghtInMap(20);
+			projectileX = projectileX - projectileW / 2;
+			projectileY = projectileY - projectileH / 2;
 
-			aMaloW = aMaloW + lenghtInMap(15);
-			aMaloH = aMaloH + lenghtInMap(20);
-			aMaloX = aMaloX - aMaloW / 2;
-			aMaloY = aMaloY - aMaloH / 2;
-
-
-			//TODO: weird things happen when using (NUMBER * 2 / m_mapSizeN) ??? cant implement AOE dmg using blast radious
-			if ((tankX < aMaloX + aMaloW) && (aMaloX < tankX + tankWidth)
-				&& (tankY < aMaloY + aMaloH) && (aMaloY < tankY + tankHeight))
+			// Tank collision with blast radious
+			if ((tankX < projectileX + projectileW) && (projectileX < tankX + tankWidth)
+				&& (tankY < projectileY + projectileH) && (projectileY < tankY + tankHeight))
 			{
 				if (m_CurrentPlayer == 1)
 				{
@@ -253,7 +259,6 @@ bool GameManager::CheckCollision()
 						GameManager::SetPlayerHitted(true, 2);
 					}
 				}
-
 				else if (m_CurrentPlayer == 2)
 				{
 					if (!(GameManager::PlayerHitted(1)))
@@ -262,24 +267,20 @@ bool GameManager::CheckCollision()
 						GameManager::SetPlayerHitted(true, 1);
 					}
 				}
-			} // END of tank collision
-
+			}
 
 			m_Map->DestroyTerrain(a, b, c, d);
 			delete m_Projectile;
 			m_Projectile = nullptr;
 
-
 			if (m_Player1->amIDead())
 			{
-
 				m_Player1->setHealth(0);
 				GameOver();
 			}
 
 			if (m_Player2->amIDead())
 			{
-
 				m_Player2->setHealth(0);
 				GameOver();
 			}
@@ -303,76 +304,26 @@ bool GameManager::CheckCollision()
 
 Vector2f GameManager::GetPlayerPosition(int player)
 {
-	if (player == 1)
-	{
-		return m_Player1->GetTankPosition();
-	}
-	else
-	{
-		return m_Player2->GetTankPosition();
-	}
+	return GetPlayer(player)->GetTankPosition();
 }
 
 Vector2f GameManager::GetPlayerSize(int player)
 {
-	if (player == 1)
-	{
-		return m_Player1->getPlayerTank().GetSize();
-	}
-	else
-	{
-		return m_Player2->getPlayerTank().GetSize();
-	}
+	return GetPlayer(player)->GetTankSize();
 }
 
 unsigned GameManager::GetPlayerScore(int player)
 {
-	if (player == 1)
-	{
-		return m_Player1->getScore();
-	}
-	else if (player == 2)
-	{
-		return m_Player2->getScore();
-	}
-	else
-	{
-		ErrorLogger::Log("GameManager::GetPlayerScore - invalid player");
-		exit(1);
-		return 0;
-	}
+	return GetPlayer(player)->getScore();
 }
 
 void GameManager::AddScoreToPlayer(int player, unsigned score)
 {
-	if (player == 1)
-	{
-		m_Player1->setScore(score);
-	}
-	else if (player == 2)
-	{
-		m_Player2->setScore(score);
-	}
-	else
-	{
-		ErrorLogger::Log("GameManager::GetPlayerScore - invalid player");
-		exit(1);
-	}
+	return GetPlayer(player)->setScore(score);
 }
 
 Vector2f GameManager::MovePlayer(int player)
 {
-	/*if (m_CurrentPlayer == 1)
-	{
-		if(m_Player1->getCanFire())
-			m_Player1->moveMyTank(dv);
-	}
-	else if (m_CurrentPlayer == 2)
-	{
-		if (m_Player2->getCanFire())
-			m_Player2->moveMyTank(dv);
-	}*/
-
 	if (player == 1)
 	{
 		if (m_CurrentPlayer == 1)
@@ -441,6 +392,7 @@ float GameManager::ScaleRatioY()
 {
 	return 2.f / m_MapSizeM;
 }
+
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
 	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
@@ -512,39 +464,22 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 
 double GameManager::GetPlayerPower()
 {
-	if (m_CurrentPlayer == 1)
-		return m_Player1->getFirePower();
-	else
-		return m_Player2->getFirePower();
+	return GetPlayerOnTurn()->getFirePower();
 }
 
 std::string GameManager::GetPlayerName(int num)
 {
-	if (num == 1)
-		return m_Player1->getPlayerName();
-	else if (num == 2)
-		return m_Player2->getPlayerName();
-	else return 0;
+	return GetPlayer(num)->getPlayerName();
 }
 
 double GameManager::GetPlayerAngle()
 {
-	if (m_CurrentPlayer == 1)
-		return m_Player1->getAngle();
-	else
-		return m_Player2->getAngle();
+	return GetPlayerOnTurn()->getAngle();
 }
 
 int GameManager::GetPlayerHealth(int player)
 {
-	if (player == 1)
-	{
-		return m_Player1->getHealth();
-	}
-	else
-	{
-		return m_Player2->getHealth();
-	}
+	return GetPlayer(player)->getHealth();
 }
 
 int GameManager::GetMapN()
@@ -621,9 +556,13 @@ void GameManager::AllowMove(PlayerMovement side)
 {
 	m_nextMove = side;
 	if (m_Projectile == nullptr)
+	{
 		m_possibleMoves = 10;
+	}
 	else
+	{
 		m_possibleMoves = 0;
+	}
 }
 
 bool GameManager::CanFire()
@@ -640,44 +579,22 @@ bool GameManager::CanFire()
 
 int GameManager::MovesLeft()
 {
-	if (m_CurrentPlayer == 1)
-	{
-		return m_Player1->getMoves();
-	}
-	else if (m_CurrentPlayer == 2)
-	{
-		return m_Player2->getMoves();
-	}
+	return GetPlayerOnTurn()->getMoves();
 }
 
 void GameManager::ReduceMoves()
 {
-	if (m_CurrentPlayer == 1)
-	{
-		m_Player1->setMoves(m_Player1->getMoves() - 1);
-	}
-	else if (m_CurrentPlayer == 2)
-	{
-		m_Player2->setMoves(m_Player2->getMoves() - 1);
-	}
+	return GetPlayerOnTurn()->setMoves(GetPlayerOnTurn()->getMoves() - 1);
 }
 
 void GameManager::SetMovesDefault()
 {
-	if (m_CurrentPlayer == 1)
-	{
-		m_Player1->setMoves(3);
-	}
-	else if (m_CurrentPlayer == 2)
-	{
-		m_Player2->setMoves(3);
-	}
+	return GetPlayerOnTurn()->setMoves(3);
 }
 
 void GameManager::GameOver()
 {
 	m_GameOverIndicator = true;
-
 }
 
 bool GameManager::getGameIndicator()
@@ -715,11 +632,11 @@ void GameManager::ShutDown()
 void GameManager::RestartGameState()
 {
 	ShutDown();
+	m_GameOverIndicator = false;
+
 	m_CurrentPlayer = 1;
 	m_Player1 = new Player("Player1", 1);
 	m_Player2 = new Player("Player2", 2);
-
-	m_GameOverIndicator = false;
 
 	m_Map = new Terrain(200);
 	m_MapSizeN = 0;
@@ -765,17 +682,15 @@ Player* GameManager::m_Player1 = nullptr;
 Player* GameManager::m_Player2 = nullptr;
 
 bool GameManager::m_GameRepeat = false;
-
 bool GameManager::m_GameOverIndicator = false;
 
 Terrain* GameManager::m_Map = nullptr;
 int GameManager::m_MapSizeN = 0;
 int GameManager::m_MapSizeM = 0;
+std::vector<unsigned>* GameManager::m_Outline = nullptr;
 
 PlayerMovement GameManager::m_nextMove = INVALID;
 int GameManager::m_possibleMoves = 0;
 
-
 Weapon * GameManager::m_Projectile = nullptr;
 
-std::vector<unsigned>* GameManager::m_Outline = nullptr;
