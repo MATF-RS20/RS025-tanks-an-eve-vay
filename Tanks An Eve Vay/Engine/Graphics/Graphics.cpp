@@ -7,7 +7,7 @@
 #define SCALE_RATIO_Y (GameManager::ScaleRatioY())
 
 #define PI (atan(1.0f)*4.0f)
-
+#define DEBUG
 #define Rsin(x,y,angle) (std::sqrt(x*x+y*y) * std::sin(angle + std::abs(std::atan(y/x))))
 #define Rcos(x,y,angle) (std::sqrt(x*x+y*y) * std::cos(angle + std::abs(std::atan(y/x))))
 
@@ -33,6 +33,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 	GameManager::Initialize();
 	UpdateMapState();
+	GameManager::SetWindowSize(Vector2f(width,height));
 
 
 
@@ -298,22 +299,30 @@ void Graphics::DrawMouseIndicator()
 	int playerOnMove = GameManager::GetCurrentPlayer();
 	Vector2f playerPosition = GameManager::GetPlayerPosition(playerOnMove);
 	Vector2f playerSize = GameManager::GetPlayerSize(playerOnMove);
+	double power = GameManager::GetPlayerPower();
 
-	Vertex line []
+	Vertex line[]
 	{
-		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.1*std::cos(angle) + playerPosition.GetX(),0.1*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.15*std::cos(angle) + playerPosition.GetX(),0.15*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.20*std::cos(angle) + playerPosition.GetX(),0.20*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.25*std::cos(angle) + playerPosition.GetX(),0.25*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.30*std::cos(angle) + playerPosition.GetX(),0.30*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.35*std::cos(angle) + playerPosition.GetX(),0.35*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.40*std::cos(angle) + playerPosition.GetX(),0.40*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.45*std::cos(angle) + playerPosition.GetX(),0.45*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.50*std::cos(angle) + playerPosition.GetX(),0.50*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
-		Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0)
+		Vertex(playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY()),
+		Vertex(power*std::cos(angle) + playerPosition.GetX(),power*std::sin(angle) + playerPosition.GetY())
 	};
-	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_POINTLIST, ARRAYSIZE(line));
+
+
+	//Vertex line []
+	//{
+	//	Vertex(0+playerPosition.GetX(),playerPosition.GetY() + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	/*Vertex(0.1*std::cos(angle) + playerPosition.GetX(),0.1*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.15*std::cos(angle) + playerPosition.GetX(),0.15*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.20*std::cos(angle) + playerPosition.GetX(),0.20*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.25*std::cos(angle) + playerPosition.GetX(),0.25*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.30*std::cos(angle) + playerPosition.GetX(),0.30*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.35*std::cos(angle) + playerPosition.GetX(),0.35*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.40*std::cos(angle) + playerPosition.GetX(),0.40*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	Vertex(0.45*std::cos(angle) + playerPosition.GetX(),0.45*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0),
+	//	*/Vertex(std::cos(angle)*power + playerPosition.GetX(),playerSize.GetY()+std::sin(angle)*power + playerPosition.GetY(), 1.0, 0.0, 0.0),
+	//	//Vertex(0.55*std::cos(angle) + playerPosition.GetX(),0.55*std::sin(angle) + playerSize.GetY(), 1.0, 0.0, 0.0)
+	//};
+	DrawShape(line, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST, ARRAYSIZE(line));
 }
 
 void Graphics::DrawShape(Vertex array[], D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,unsigned arraySize)
@@ -354,13 +363,11 @@ void Graphics::DrawTank(int player)
 		red = 1;
 		blue = 0;
 	}
-
 	else if (player == 2)
 	{
 		blue = 1;
 		red = 0;
 	}
-
 	else
 	{
 		ErrorLogger::Log("DrawTank color setup: invalid player");
@@ -419,16 +426,13 @@ void Graphics::DrawTank(int player)
 		//Vertex(0.0f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,0.0f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
 		//Vertex(-0.5f*scalex*cosAngle - 0.2f*scaley*sinAngle + playerX,-0.5f*scalex*sinAngle + 0.2f*scaley*cosAngle + playerY),
 
-
-
-
 #ifdef DEBUG
 	Vertex system[] 
 	{
 		Vertex(-1,0),
 		Vertex(1,0),
-		Vertex(0,-1),
-		Vertex(0,1)
+		Vertex(-0.5,-1),
+		Vertex(-0.5,1)
 	};
 	DrawShape(system, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST,ARRAYSIZE(system));
 #endif
@@ -449,7 +453,6 @@ void Graphics::DrawTank(int player)
 		Vertex(0.5f*scalex + playerX,0.4f*scaley + playerY,0,0,0),
 		Vertex(0.5f*scalex + playerX,0.3f*scaley + playerY,0,0,0),
 	};
-	
 	
 	DrawShape(base, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(base));
 	DrawShape(top, D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, ARRAYSIZE(top));
@@ -509,7 +512,7 @@ void Graphics::DrawProjectile()
 	double y1 = y - h / 2.0f;
 	double y2 = y + h / 2.0f;
 
-	Vertex v[] =
+	Vertex v[]
 	{
 		Vertex(x1, y1),
 		Vertex(x1 ,y2),

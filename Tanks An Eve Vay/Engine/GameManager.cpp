@@ -385,8 +385,8 @@ float GameManager::ScaleRatioY()
 }
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
-	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
-	double yScale = 1.f - mousePosition.GetY() / 300.0f;
+	double xScale = -1.0f + (mousePosition.GetX() / (m_WindowWidth/2.0f));
+	double yScale = 1.f - (mousePosition.GetY() / (m_WindowHeight/2.0f));
 
 	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
 	double radianAngle = 0.0f;
@@ -399,7 +399,7 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		radianAngle = m_Player2->getAngle();
 	}
 	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
-	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()) {
+	if (k <= 0 && yScale > (playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())) {
 		radianAngle = std::atan(k);
 		if (radianAngle < 0)
 		{
@@ -424,9 +424,9 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		}
 		OutputDebugStringA(std::to_string(power).c_str());
 	}
-	else if(k>=0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())
+	else if(k>=0 && yScale > (playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()))
 	{
-		radianAngle = std::abs(std::atan(k));
+		radianAngle = std::atan(k);
 
 		double power = lineLength(playerPosition.GetX(), playerPosition.GetY(), xScale, yScale);
 		if (power > 1.0)
@@ -616,6 +616,55 @@ void GameManager::SetMovesDefault()
 	}
 }
 
+void GameManager::SetWindowSize(Vector2f size)
+{
+	m_WindowHeight = size.GetY();
+	m_WindowWidth = size.GetX();
+}
+
+void GameManager::Fall()
+{
+	Vector2f tankPosition = m_Player2->GetTankPosition();
+	Vector2f tankSize = m_Player2->GetTankSize();
+	double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2))) + 1;
+	double y = (Coords(tankPosition.GetY())) - 1;
+	double rightX = std::ceil(Coords(tankPosition.GetX() + tankSize.GetX() / 6)) - 1;
+
+	bool canFall = true;
+	for (unsigned i = leftX; i <= rightX; i++)
+	{
+		if (m_Map->GetElement(i,y))
+		{
+			canFall = false;
+			break;
+		}
+	}
+
+	if (canFall)
+	{
+		unsigned jFirst = 0;
+		unsigned iFirst = 0;
+		for (unsigned i = leftX; i <= rightX; i++)
+		{
+			if (m_Outline->at(i) >= jFirst)
+			{
+				jFirst = m_Outline->at(i);
+				iFirst = i;
+			}
+		}
+		//double angle = std::atan((iFirst*1.0f - iSecond * 1.0f) / (jFirst*1.0f - jSecond * 1.0f));
+		//playerTank.setTankDrawAngle(angle);
+		//return Vector2f(0, -0.01*(y - jFirst));
+	}
+	else
+	{
+		//return Vector2f(-0.01, 0);
+	}
+
+
+
+}
+
 
 
 //Initializing of static class member
@@ -634,3 +683,5 @@ Weapon * GameManager::m_Projectile = nullptr;
 
 std::vector<unsigned>* GameManager::m_Outline = nullptr;
 
+int GameManager::m_WindowHeight = 1;
+int GameManager::m_WindowWidth = 1;

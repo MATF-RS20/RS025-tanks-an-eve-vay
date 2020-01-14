@@ -68,6 +68,11 @@ public:
 
 	static void SetMovesDefault();
 
+
+
+	static void SetWindowSize(Vector2f size);
+protected:
+	static void Fall();
 private:
 	static Terrain* m_Map;
 	static int m_MapSizeN;
@@ -84,5 +89,9 @@ private:
 
 	static int m_possibleMoves;
 	static PlayerMovement m_nextMove;
+
+	static int m_WindowHeight;
+	static int m_WindowWidth;
+
 };
 

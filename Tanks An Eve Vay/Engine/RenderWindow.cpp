@@ -40,7 +40,7 @@ bool RenderWindow::Initialize(WindowContainer* pWindowContainer,HINSTANCE hInsta
 	ShowWindow(m_Handle, SW_SHOW);
 	SetForegroundWindow(m_Handle);
 	SetFocus(m_Handle);
-
+	ShowCursor(FALSE);
 	return true;
 }
 
