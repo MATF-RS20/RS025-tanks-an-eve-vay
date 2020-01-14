@@ -37,6 +37,11 @@ void Engine::Update()
 
 		switch (keycode)
 		{
+
+		case VK_ESCAPE:
+			GameManager::ShutDown();
+			exit(0);
+			break;
 		case VK_LEFT:
 		case 'A':
 			if(GameManager::MovesLeft() > 0 && GameManager::CanFire() == true && !GameManager::getGameIndicator())

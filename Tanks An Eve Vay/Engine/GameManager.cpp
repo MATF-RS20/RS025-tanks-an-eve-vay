@@ -44,7 +44,8 @@ Player* GameManager::GetPlayerOnTurn()
 	else
 	{
 		ErrorLogger::Log("GetPlayerOnMove: current player");
-		return nullptr;
+		ShutDown();
+		exit(1);
 	}
 
 }
@@ -62,7 +63,8 @@ Player* GameManager::GetPlayer(int i)
 	else
 	{
 		ErrorLogger::Log("GetPlayer: invalid player");
-		return nullptr;
+		ShutDown();
+		exit(1);
 	}
 }
 
@@ -395,8 +397,8 @@ float GameManager::ScaleRatioY()
 
 void GameManager::RotateTurret(Vector2f mousePosition)
 {
-	double xScale = -1.0f + mousePosition.GetX() / 400.0f;
-	double yScale = 1.f - mousePosition.GetY() / 300.0f;
+	double xScale = -1.0f + (mousePosition.GetX() / (1540.0f/2.0f));
+	double yScale = 1.0f - (mousePosition.GetY() / (1200.0f/2.0f));
 
 	Vector2f playerPosition = GetPlayerPosition(m_CurrentPlayer);
 	double radianAngle = 0.0f;
@@ -409,7 +411,7 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		radianAngle = m_Player2->getAngle();
 	}
 	double k = (yScale - playerPosition.GetY()) / (xScale - playerPosition.GetX());
-	if (k <= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()) {
+	if (k <= 0 && yScale > (playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())) {
 		radianAngle = std::atan(k);
 		if (radianAngle < 0)
 		{
@@ -434,9 +436,9 @@ void GameManager::RotateTurret(Vector2f mousePosition)
 		}
 		OutputDebugStringA(std::to_string(power).c_str());
 	}
-	else if (k >= 0 && yScale > playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY())
+	else if(k>=0 && yScale > (playerPosition.GetY() + GameManager::GetPlayerSize(m_CurrentPlayer).GetY()))
 	{
-		radianAngle = std::abs(std::atan(k));
+		radianAngle = std::atan(k);
 
 		double power = lineLength(playerPosition.GetX(), playerPosition.GetY(), xScale, yScale);
 		if (power > 1.0)
@@ -550,6 +552,8 @@ void GameManager::UpdateTerrainOutline()
 			}
 		}
 	}
+	Fall(1);
+	Fall(2);
 }
 
 void GameManager::AllowMove(PlayerMovement side)
@@ -655,13 +659,13 @@ void GameManager::RestartGameState()
 	switch (mapRandom)
 	{
 	case 1:
-		m_Map->FillTerrain(TerrainType::Flat);
+		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	case 2:
 		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	case 3:
-		m_Map->FillTerrain(TerrainType::Random);
+		m_Map->FillTerrain(TerrainType::Hill);
 		break;
 	default:
 		m_Map->FillTerrain(TerrainType::Random);
@@ -672,6 +676,57 @@ void GameManager::RestartGameState()
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
 	UpdateTerrainOutline();
+	Fall(2);
+	Fall(1);
+}
+
+void GameManager::SetWindowSize(Vector2f size)
+{
+	m_WindowHeight = size.GetY();
+	m_WindowWidth = size.GetX();
+}
+
+void GameManager::Fall(int i)
+{
+	Vector2f tankPosition = GetPlayerPosition(i);
+	Vector2f tankSize = GetPlayerSize(i);
+	double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2))) + 1;
+	double y = (Coords(tankPosition.GetY())) - 1;
+	double rightX = std::ceil(Coords(tankPosition.GetX() + tankSize.GetX() / 6)) - 1;
+
+	bool canFall = true;
+	for (unsigned i = leftX; i <= rightX; i++)
+	{
+		if (m_Map->GetElement(i,y))
+		{
+			canFall = false;
+			break;
+		}
+	}
+
+	if (canFall)
+	{
+		unsigned jFirst = 0;
+		unsigned iFirst = 0;
+		for (unsigned i = leftX; i <= rightX; i++)
+		{
+			if (m_Outline->at(i) >= jFirst)
+			{
+				jFirst = m_Outline->at(i);
+				iFirst = i;
+			}
+		}
+		//double angle = std::atan((iFirst*1.0f - iSecond * 1.0f) / (jFirst*1.0f - jSecond * 1.0f));
+		//playerTank.setTankDrawAngle(angle);
+		GetPlayer(i)->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
+	}
+	else
+	{
+		//return Vector2f(-0.01, 0);
+	}
+
+
+
 }
 
 
@@ -694,3 +749,5 @@ int GameManager::m_possibleMoves = 0;
 
 Weapon * GameManager::m_Projectile = nullptr;
 
+int GameManager::m_WindowHeight = 1;
+int GameManager::m_WindowWidth = 1;

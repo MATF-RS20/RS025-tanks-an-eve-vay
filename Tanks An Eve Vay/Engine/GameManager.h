@@ -73,6 +73,8 @@ public:
 
 	static void SetMovesDefault();
 
+	static void SetWindowSize(Vector2f size);
+
 	static void GameOver();
 
 	static bool getGameIndicator();
@@ -80,6 +82,8 @@ public:
 	static void ShutDown();
 
 	static void RestartGameState();
+protected:
+	static void Fall(int i);
 
 private:
 	static Terrain* m_Map;
@@ -101,6 +105,10 @@ private:
 
 	static int m_possibleMoves;
 	static PlayerMovement m_nextMove;
+
+	static int m_WindowHeight;
+	static int m_WindowWidth;
+
 
 	static Player * GetPlayerOnTurn();
 	static Player * GetPlayer(int i);

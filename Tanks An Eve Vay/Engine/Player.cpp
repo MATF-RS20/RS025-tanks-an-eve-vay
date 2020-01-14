@@ -13,10 +13,10 @@ Player::Player(std::string name, const int id) :
 	m_uniqueID(id)
 {
 	if (id == 1)
-		m_playerTank = new Tank(Vector2f(-0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
+		m_playerTank = new Tank(Vector2f(-0.7f, 0.9f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
 
 	else if (id == 2)
-		m_playerTank = new Tank(Vector2f(0.5f, 0.0f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
+		m_playerTank = new Tank(Vector2f(0.7f, 0.9f), Vector2f(0.1f, 0.1f)); //predefinisao sam poziciju radi provere
 }
 
 Player::~Player()
