@@ -12,12 +12,13 @@
 void GameManager::Initialize()
 {
 	m_Player1->setCanFire(true);
-	m_Map->FillTerrain(TerrainType::Random);
+	m_Map->FillTerrain(TerrainType::Hill);
 
 	m_MapSizeN = m_Map->GetN();
 	m_MapSizeM = m_Map->GetM();
 	m_Outline = new std::vector<unsigned>(m_MapSizeN);
 	UpdateTerrainOutline();
+	Fall();
 }
 
 bool GameManager::GetGridValue(int i, int j) {
@@ -654,7 +655,7 @@ void GameManager::Fall()
 		}
 		//double angle = std::atan((iFirst*1.0f - iSecond * 1.0f) / (jFirst*1.0f - jSecond * 1.0f));
 		//playerTank.setTankDrawAngle(angle);
-		//return Vector2f(0, -0.01*(y - jFirst));
+		m_Player2->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
 	}
 	else
 	{
