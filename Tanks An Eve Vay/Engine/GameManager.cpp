@@ -623,10 +623,10 @@ void GameManager::SetWindowSize(Vector2f size)
 	m_WindowWidth = size.GetX();
 }
 
-void GameManager::Fall()
+void GameManager::Fall(int i)
 {
-	Vector2f tankPosition = m_Player2->GetTankPosition();
-	Vector2f tankSize = m_Player2->GetTankSize();
+	Vector2f tankPosition = GetPlayerPosition(i);
+	Vector2f tankSize = GetPlayerSize(i);
 	double leftX = std::ceil((Coords(tankPosition.GetX() - tankSize.GetX() / 2))) + 1;
 	double y = (Coords(tankPosition.GetY())) - 1;
 	double rightX = std::ceil(Coords(tankPosition.GetX() + tankSize.GetX() / 6)) - 1;
@@ -655,7 +655,7 @@ void GameManager::Fall()
 		}
 		//double angle = std::atan((iFirst*1.0f - iSecond * 1.0f) / (jFirst*1.0f - jSecond * 1.0f));
 		//playerTank.setTankDrawAngle(angle);
-		m_Player2->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
+		//->moveMyTank(Vector2f(0, -0.01*(y - jFirst)));
 	}
 	else
 	{
