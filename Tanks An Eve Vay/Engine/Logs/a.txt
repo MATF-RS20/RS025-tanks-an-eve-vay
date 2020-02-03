@@ -1,0 +1,15 @@
+[123] : 123
+	[FILE]: c:\users\isa\desktop\rs025-tanks-an-eve-vay\tanks an eve vay\loggertool\test.h
+	[LINE]: 24
+[broj] : 111111111111111111
+	[FILE]: c:\users\isa\desktop\rs025-tanks-an-eve-vay\tanks an eve vay\loggertool\test.h
+	[LINE]: 25
+[tag] : Pera je gey
+	[FILE]: c:\users\isa\desktop\rs025-tanks-an-eve-vay\tanks an eve vay\loggertool\test.h
+	[LINE]: 26
+[x] : 123445
+	[FILE]: c:\users\isa\desktop\rs025-tanks-an-eve-vay\tanks an eve vay\loggertool\test.h
+	[LINE]: 27
+[objekat] : 0 4.5554 perapera
+	[FILE]: c:\users\isa\desktop\rs025-tanks-an-eve-vay\tanks an eve vay\loggertool\test.h
+	[LINE]: 29
