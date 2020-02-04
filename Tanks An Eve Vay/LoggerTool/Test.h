@@ -3,14 +3,20 @@
 #include <string>
 class TestObject
 {
-	friend std::ostream& operator<<(std::ostream& out, const TestObject& o)
-	{
-		return out << o.x << " " << o.y << " " << o.name;
-	}
+public:
+	FRIENDLOG(x, y, name)
 private:
+
 	int x = 0;
 	double y = 4.5554;
 	std::string name = "perapera";
+};
+class TestObject2
+{
+public:
+	TestObject* o = new TestObject();
+	FRIENDLOG(o)
+	POINTERSLOG(o)
 };
 
 class Test
@@ -25,8 +31,8 @@ public:
 		LOG(111111111111111111, "broj");
 		LOG("Pera je gey", "tag");
 		LOG(x, "x");
-		TestObject o;
-		LOG(o, "objekat");
+		TestObject2 o;
+		o.LogPointers();
 		Logger::ShutDownLogger();
 	}
 };
